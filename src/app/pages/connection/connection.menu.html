@@ -1,0 +1,87 @@
+<ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-title>
+        Conexión y Configuración
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content [fullscreen]="true" class="ion-padding">
+    <div class="connection-container">
+      <h2 class="ion-text-center">Selecciona tu método de conexión</h2>
+      
+      <div class="connection-type-selector">
+        <ion-segment [(ngModel)]="connectionType" (ionChange)="connectionTypeChanged()">
+          <ion-segment-button value="bluetooth">
+            <ion-icon name="bluetooth"></ion-icon>
+            <ion-label>Bluetooth</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="wifi">
+            <ion-icon name="wifi"></ion-icon>
+            <ion-label>WiFi</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+  
+      <div class="mode-buttons">
+        <ion-button expand="block" color="primary" (click)="selectMode('predeterminado')">
+          <ion-icon slot="start" name="flash"></ion-icon>
+          Predeterminado
+        </ion-button>
+        
+        <ion-button expand="block" color="secondary" (click)="selectMode('personalizado')">
+          <ion-icon slot="start" name="color-palette"></ion-icon>
+          Personalizado
+        </ion-button>
+        
+        <ion-button expand="block" color="tertiary" (click)="selectMode('musica')">
+          <ion-icon slot="start" name="musical-notes"></ion-icon>
+          Sincronizar con música
+        </ion-button>
+      </div>
+  
+      <div class="connection-actions">
+        <ion-button expand="block" color="dark" (click)="scanDevices()">
+          <ion-icon slot="start" name="search"></ion-icon>
+          {{ connectionType === 'bluetooth' ? 'Buscar dispositivos' : 'Escanear redes' }}
+        </ion-button>
+        
+        <div class="connection-status" *ngIf="connectionStatus">
+          <ion-chip [color]="isConnected ? 'success' : 'warning'">
+            <ion-icon [name]="isConnected ? 'checkmark-circle' : 'alert-circle'"></ion-icon>
+            <ion-label>{{ connectionStatus }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+  
+      <ion-list *ngIf="devices.length > 0">
+        <ion-list-header>
+          <ion-label>Dispositivos disponibles</ion-label>
+        </ion-list-header>
+        
+        <ion-item *ngFor="let device of devices" (click)="connectToDevice(device)">
+          <ion-icon [name]="connectionType === 'bluetooth' ? 'bluetooth' : 'wifi'" slot="start"></ion-icon>
+          <ion-label>
+            <h2>{{ device.name }}</h2>
+            <p>{{ device.id }}</p>
+          </ion-label>
+          <ion-button slot="end" fill="clear" color="primary">
+            <ion-icon name="link"></ion-icon>
+            Conectar
+          </ion-button>
+        </ion-item>
+      </ion-list>
+  
+      <div class="no-devices" *ngIf="showNoDevicesMessage">
+        <ion-text color="medium">
+          <p class="ion-text-center">No se encontraron dispositivos</p>
+        </ion-text>
+        <ion-button expand="block" color="medium" (click)="scanDevices()">
+          <ion-icon slot="start" name="refresh"></ion-icon>
+          Reintentar
+        </ion-button>
+      </div>
+    </div>
+  </ion-content>
+  
+  
