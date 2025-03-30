@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF0000;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <g filter="url(#glow)">
+    <circle cx="100" cy="100" r="80" fill="none" stroke="url(#grad1)" stroke-width="8" />
+    <path d="M65,70 L65,130 M65,70 L95,90 M65,100 L85,100 M65,130 L95,110" stroke="#000000" stroke-width="10" stroke-linecap="round" />
+    <path d="M115,70 L115,130 M145,70 L115,100 M115,100 L145,100 M145,130 L115,100" stroke="#FF0000" stroke-width="10" stroke-linecap="round" />
+    <circle cx="100" cy="100" r="30" fill="none" stroke="url(#grad1)" stroke-width="4" />
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+{
+  "name": "GlowLink",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
