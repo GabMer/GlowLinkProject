@@ -1,13 +1,14 @@
-import { Routes } from '@angular/router';
+import type { Routes } from "@angular/router"
 
 export const routes: Routes = [
   {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    path: "light-control",
+    loadComponent: () => import("./pages/light-control/light-control.page").then((m) => m.LightControlPage),
   },
   {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full',
+    path: "",
+    redirectTo: "light-control",
+    pathMatch: "full",
   },
-];
+]
+
