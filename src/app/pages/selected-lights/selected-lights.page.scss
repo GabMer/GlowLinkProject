@@ -1,0 +1,182 @@
+// Variables
+:root {
+    --glow-primary: #ff5500;
+    --glow-secondary: #00aaff;
+    --glow-accent: #ff00ff;
+    --glow-dark: #1a1a1a;
+    --glow-card-bg: #2a2a2a;
+    --glow-card-active: #333333;
+  }
+  
+  // Estilos generales
+  .glowlink-header {
+    --background: var(--glow-dark);
+    
+    .app-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: linear-gradient(90deg, var(--glow-primary), var(--glow-accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: 8px;
+    }
+    
+    .app-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  }
+  
+  .glowlink-content {
+    --background: #121212;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(255, 85, 0, 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 90% 80%, rgba(0, 170, 255, 0.1) 0%, transparent 20%),
+      radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 30%);
+  }
+  
+  .selected-count {
+    text-align: center;
+    margin: 16px 0;
+    
+    h2 {
+      color: #ffffff;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  
+  // Tarjetas de luces
+  .light-card {
+    margin: 16px 0;
+    border-radius: 16px;
+    background-color: var(--glow-card-bg);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease, transform 0.2s ease;
+    
+    &.light-on {
+      background-color: var(--glow-card-active);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    &.light-off {
+      opacity: 0.85;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .light-color-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 100%;
+    transition: background-color 0.5s ease, opacity 0.5s ease;
+  }
+  
+  .light-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+    
+    .light-icon {
+      font-size: 1.5rem;
+      margin-right: 12px;
+      transition: color 0.3s ease, filter 0.3s ease;
+    }
+  }
+  
+  // Detalles de la luz
+  .light-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+  }
+  
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    ion-label {
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+      min-width: 70px;
+    }
+    
+    .status-on {
+      color: var(--ion-color-success);
+      font-weight: 600;
+    }
+    
+    .status-off {
+      color: var(--ion-color-medium);
+    }
+    
+    .color-preview-small {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .color-hex-small {
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .rgb-values {
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+  }
+  
+  // Controles globales
+  .global-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0;
+    
+    ion-button {
+      margin: 0;
+      --border-radius: 12px;
+      height: 48px;
+      font-weight: 500;
+    }
+  }
+  
+  // Footer
+  .footer-toolbar {
+    --min-height: 48px;
+    --padding-top: 4px;
+    --padding-bottom: 4px;
+  }
+  
+  .connection-status {
+    display: flex;
+    justify-content: center;
+  }
+  
+  // Optimizaciones para móviles
+  @media (max-width: 576px) {
+    .detail-item {
+      flex-wrap: wrap;
+      
+      ion-label {
+        min-width: 100%;
+      }
+    }
+  }
+  
+  

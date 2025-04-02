@@ -5,6 +5,7 @@ import type { Light, Preset, TimerSettings, RGB } from "../models/light.model"
 @Injectable({
   providedIn: "root",
 })
+
 export class LightService {
   // Estado inicial de las luces
   private initialLights: Light[] = [
@@ -15,6 +16,7 @@ export class LightService {
       color: "#ff5500",
       brightness: 100,
       rgb: { r: 255, g: 85, b: 0 },
+      selected: false,
     },
     {
       id: 2,
@@ -23,6 +25,7 @@ export class LightService {
       color: "#00aaff",
       brightness: 90,
       rgb: { r: 0, g: 170, b: 255 },
+      selected: false,
     },
     {
       id: 3,
@@ -31,6 +34,7 @@ export class LightService {
       color: "#ff00ff",
       brightness: 80,
       rgb: { r: 255, g: 0, b: 255 },
+      selected: false,
     },
   ]
 
@@ -42,7 +46,7 @@ export class LightService {
   ]
 
   // BehaviorSubjects para manejar el estado
-  private lightsSubject = new BehaviorSubject<Light[]>([...this.initialLights])
+  public lightsSubject = new BehaviorSubject<Light[]>([...this.initialLights])
   private presetsSubject = new BehaviorSubject<Preset[]>([...this.initialPresets])
   private timerSettingsSubject = new BehaviorSubject<TimerSettings>({
     active: false,
@@ -89,6 +93,23 @@ export class LightService {
     const lights = this.getLights()
     const updatedLights = lights.map((light) => (light.id === id ? { ...light, isOn: !light.isOn } : light))
     this.lightsSubject.next(updatedLights)
+  }
+
+  /**
+   * Cambia el estado de selección de una luz
+   * @param id ID de la luz a modificar
+   */
+  public toggleLightSelection(id: number): void {
+    const lights = this.getLights()
+    const updatedLights = lights.map((light) => (light.id === id ? { ...light, selected: !light.selected } : light))
+    this.lightsSubject.next(updatedLights)
+  }
+
+  /**
+   * Obtiene las luces seleccionadas
+   */
+  public getSelectedLights(): Light[] {
+    return this.getLights().filter((light) => light.selected)
   }
 
   /**

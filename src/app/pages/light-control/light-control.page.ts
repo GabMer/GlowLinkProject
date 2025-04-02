@@ -1,9 +1,11 @@
-import { Component, type OnInit, type OnDestroy } from "@angular/core"
+// Actualizar los imports para usar @ionic/angular/standalone
+import { Component,  OnInit,  OnDestroy } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
+import { Router } from "@angular/router"
 import { Subscription } from "rxjs"
 import { Light, Preset, TimerSettings } from "../../models/light.model"
-import { LightService } from "../../services/light.service";
+import { LightService } from "../../services/light.service"
 import { BluetoothService } from "../../services/bluetooth.service"
 import { FilterByPipe } from "../../pipes/filter-by.pipe"
 
@@ -36,7 +38,11 @@ import {
   IonText,
   IonChip,
   IonFooter,
+  IonCheckbox,
+  IonFab,
+  IonFabButton,
   ToastController,
+  IonBadge,
 } from "@ionic/angular/standalone"
 
 // Importar addIcons para los iconos
@@ -55,6 +61,9 @@ import {
   addOutline,
   closeOutline,
   saveOutline,
+  eyeOutline,
+  checkmarkCircleOutline,
+  arrowForward,
 } from "ionicons/icons"
 
 @Component({
@@ -94,6 +103,10 @@ import {
     IonText,
     IonChip,
     IonFooter,
+    IonCheckbox,
+    IonFab,
+    IonFabButton,
+    IonBadge,
   ],
 })
 export class LightControlPage implements OnInit, OnDestroy {
@@ -109,6 +122,7 @@ export class LightControlPage implements OnInit, OnDestroy {
   showSavePresetModal = false
   newPresetName = ""
   expandedLightId: number | null = null
+  selectionMode = false
 
   // Colores predefinidos para selección rápida
   quickColors = ["#ff0000", "#ff8800", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff", "#ffffff"]
@@ -120,24 +134,27 @@ export class LightControlPage implements OnInit, OnDestroy {
     private lightService: LightService,
     private bluetoothService: BluetoothService,
     private toastController: ToastController,
+    private router: Router,
   ) {
     // Registrar los iconos
     addIcons({
-      timerOutline,
-      contrastOutline,
-      flashOutline,
-      colorWandOutline,
-      addOutline,
-      closeOutline,
-      saveOutline,
-      bulbOutline,
-      bulb,
-      bluetoothOutline,
-      bluetooth,
-      chevronUpOutline,
-      chevronDownOutline
-    });
-
+      "bulb-outline": bulbOutline,
+      bulb: bulb,
+      "bluetooth-outline": bluetoothOutline,
+      bluetooth: bluetooth,
+      "timer-outline": timerOutline,
+      "contrast-outline": contrastOutline,
+      "flash-outline": flashOutline,
+      "chevron-up-outline": chevronUpOutline,
+      "chevron-down-outline": chevronDownOutline,
+      "color-wand-outline": colorWandOutline,
+      "add-outline": addOutline,
+      "close-outline": closeOutline,
+      "save-outline": saveOutline,
+      "eye-outline": eyeOutline,
+      "checkmark-circle-outline": checkmarkCircleOutline,
+      "arrow-forward": arrowForward,
+    })
   }
 
   ngOnInit() {
@@ -177,7 +194,49 @@ export class LightControlPage implements OnInit, OnDestroy {
    * Cambia el estado de encendido/apagado de una luz
    */
   toggleLight(id: number): void {
-    this.lightService.toggleLight(id)
+    if (this.selectionMode) {
+      this.toggleLightSelection(id)
+    } else {
+      this.lightService.toggleLight(id)
+    }
+  }
+
+  /**
+   * Cambia el estado de selección de una luz
+   */
+  toggleLightSelection(id: number): void {
+    this.lightService.toggleLightSelection(id)
+  }
+
+  /**
+   * Activa/desactiva el modo de selección
+   */
+  toggleSelectionMode(): void {
+    this.selectionMode = !this.selectionMode
+    if (!this.selectionMode) {
+      // Resetear todas las selecciones si salimos del modo selección
+      const lights = this.lightService.getLights()
+      const updatedLights = lights.map((light) => ({ ...light, selected: false }))
+      this.lightService.lightsSubject.next(updatedLights)
+    }
+  }
+
+  /**
+   * Obtiene el número de luces seleccionadas
+   */
+  getSelectedCount(): number {
+    return this.lights.filter((light) => light.selected).length
+  }
+
+  /**
+   * Navega a la página de visualización de luces seleccionadas
+   */
+  viewSelectedLights(): void {
+    if (this.getSelectedCount() === 0) {
+      this.showToast("Selecciona al menos una luz para visualizar")
+      return
+    }
+    this.router.navigate(["/selected-lights"])
   }
 
   /**
@@ -201,6 +260,18 @@ export class LightControlPage implements OnInit, OnDestroy {
   changeBrightness(id: number, event: any): void {
     const brightness = event.detail.value
     this.lightService.changeBrightness(id, brightness)
+  }
+
+  /**
+   * Obtiene el valor numérico de un evento de ion-range
+   */
+  getRangeValue(value: any): number {
+    if (typeof value === "number") {
+      return value
+    } else if (value && typeof value.lower === "number") {
+      return value.lower // O usa `value.upper` si necesitas el valor superior
+    }
+    return 0 // Valor por defecto si hay algún error
   }
 
   /**
@@ -304,14 +375,6 @@ export class LightControlPage implements OnInit, OnDestroy {
     if (light && light.isOn) {
       this.lightService.changeColor(lightId, color)
     }
-  }
-  getRangeValue(value: any): number {
-    if (typeof value === 'number') {
-      return value;
-    } else if (value && typeof value.lower === 'number') {
-      return value.lower; // O usa `value.upper` si necesitas el valor superior
-    }
-    return 0; // Valor por defecto si hay algún error
   }
 }
 

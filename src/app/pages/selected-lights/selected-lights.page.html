@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar color="dark" class="glowlink-header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/light-control"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="app-title">GlowLink</span>
+      <span class="app-subtitle">Luces Seleccionadas</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="ion-padding glowlink-content">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <div class="selected-count">
+          <h2>{{selectedLights.length}} luces seleccionadas</h2>
+        </div>
+      </ion-col>
+    </ion-row>
+    
+    <!-- Luces seleccionadas -->
+    <ion-row *ngFor="let light of selectedLights">
+      <ion-col size="12">
+        <ion-card [ngClass]="{'light-card': true, 'light-on': light.isOn, 'light-off': !light.isOn}">
+          <div 
+            class="light-color-indicator" 
+            [style.background-color]="light.color"
+            [style.opacity]="light.isOn ? light.brightness / 100 : 0.2"
+          ></div>
+          
+          <ion-card-header>
+            <ion-card-title class="light-title">
+              <ion-icon 
+                [name]="light.isOn ? 'bulb' : 'bulb-outline'" 
+                class="light-icon"
+                [style.color]="light.isOn ? light.color : 'var(--ion-color-medium)'"
+                [style.filter]="light.isOn ? 'brightness(' + light.brightness + '%)' : 'none'"
+              ></ion-icon>
+              {{light.name}}
+            </ion-card-title>
+          </ion-card-header>
+          
+          <ion-card-content>
+            <div class="light-details">
+              <div class="detail-item">
+                <ion-label>Estado:</ion-label>
+                <span [ngClass]="{'status-on': light.isOn, 'status-off': !light.isOn}">
+                  {{light.isOn ? 'Encendida' : 'Apagada'}}
+                </span>
+              </div>
+              
+              <div class="detail-item">
+                <ion-label>Color:</ion-label>
+                <div class="color-preview-small" [style.background-color]="light.color"></div>
+                <span class="color-hex-small">{{light.color}}</span>
+              </div>
+              
+              <div class="detail-item">
+                <ion-label>Brillo:</ion-label>
+                <span>{{light.brightness}}%</span>
+              </div>
+              
+              <div class="detail-item">
+                <ion-label>RGB:</ion-label>
+                <span class="rgb-values">
+                  R: {{light.rgb.r}}, G: {{light.rgb.g}}, B: {{light.rgb.b}}
+                </span>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    
+    <!-- Botones de control para luces seleccionadas -->
+    <ion-row>
+      <ion-col size="12">
+        <div class="global-controls">
+          <ion-button 
+            expand="block" 
+            color="success"
+            (click)="turnAllSelectedOn()"
+          >
+            <ion-icon name="flash-outline" slot="start"></ion-icon>
+            Encender Seleccionadas
+          </ion-button>
+          <ion-button 
+            expand="block" 
+            color="medium"
+            (click)="turnAllSelectedOff()"
+          >
+            <ion-icon name="contrast-outline" slot="start"></ion-icon>
+            Apagar Seleccionadas
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="dark" class="footer-toolbar">
+    <div class="connection-status">
+      <ion-button fill="clear" routerLink="/light-control">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Volver al Control Principal
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>
+

@@ -6,6 +6,7 @@
   --glow-dark: #1a1a1a;
   --glow-card-bg: #2a2a2a;
   --glow-card-active: #333333;
+  --glow-card-selected: #2d3748;
 }
 
 // Estilos generales
@@ -17,6 +18,7 @@
     font-size: 1.2rem;
     background: linear-gradient(90deg, var(--glow-primary), var(--glow-accent));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-right: 8px;
   }
@@ -55,6 +57,11 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   
+  &.light-selected {
+    border: 2px solid var(--ion-color-success);
+    box-shadow: 0 0 12px rgba(72, 187, 120, 0.5);
+  }
+  
   &:active {
     transform: scale(0.98);
   }
@@ -82,13 +89,21 @@
     transition: color 0.3s ease, filter 0.3s ease;
   }
   
-  .light-toggle {
+  .light-toggle, .light-checkbox {
     margin-left: auto;
+  }
+  
+  .light-toggle {
     --background: rgba(255, 255, 255, 0.1);
     --background-checked: rgba(255, 255, 255, 0.2);
     --handle-background: var(--ion-color-medium);
     --handle-background-checked: var(--ion-color-primary);
     transition: opacity 0.3s ease;
+  }
+  
+  .light-checkbox {
+    --size: 24px;
+    --checkbox-background-checked: var(--ion-color-success);
   }
 }
 

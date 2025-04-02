@@ -11,7 +11,10 @@ export interface Light {
   color: string
   brightness: number
   rgb: RGB
+  selected?: boolean
+  isFlashing?: boolean; 
 }
+
 
 export interface Preset {
   id: number

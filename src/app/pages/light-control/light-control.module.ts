@@ -12,6 +12,7 @@ import { FilterByPipe } from "../../pipes/filter-by.pipe"
     CommonModule,
     FormsModule,
     IonicModule,
+    
     RouterModule.forChild([
       {
         path: "",
