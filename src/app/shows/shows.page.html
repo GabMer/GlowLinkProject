@@ -1,0 +1,18 @@
+<ion-content class="ion-padding main-content">
+    <h1 class="title">Espectáculos de Luces</h1>
+    
+    <div class="shows-grid">
+      <div *ngFor="let show of shows" 
+           class="show-item" 
+           [style.background-color]="show.color"
+           (click)="selectShow(show.id)">
+        <ion-icon [name]="show.icon" [style.color]="show.iconColor"></ion-icon>
+        <div class="show-name" [style.color]="show.textColor">{{ show.name }}</div>
+      </div>
+    </div>
+    
+    <ion-button expand="block" class="connect-button" (click)="connectDevices()">
+      <ion-icon name="bluetooth" slot="start"></ion-icon>
+      Conectar dispositivos
+    </ion-button>
+  </ion-content>

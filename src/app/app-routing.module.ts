@@ -11,6 +11,10 @@ const routes: Routes = [
     loadChildren: () => import('./connection/connection.module').then(m => m.ConnectionPageModule)
   },
   {
+    path: 'shows',
+    loadChildren: () => import('./shows/shows.module').then(m => m.ShowsPageModule)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
