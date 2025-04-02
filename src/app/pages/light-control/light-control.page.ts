@@ -1,11 +1,10 @@
-// Actualizar los imports para usar @ionic/angular/standalone
 import { Component, type OnInit, type OnDestroy } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
-import type { Subscription } from "rxjs"
-import type { Light, Preset, TimerSettings } from "../../models/light.model"
-import type { LightService } from "../../services/light.service"
-import type { BluetoothService } from "../../services/bluetooth.service"
+import { Subscription } from "rxjs"
+import { Light, Preset, TimerSettings } from "../../models/light.model"
+import { LightService } from "../../services/light.service";
+import { BluetoothService } from "../../services/bluetooth.service"
 import { FilterByPipe } from "../../pipes/filter-by.pipe"
 
 // Importar componentes Ionic desde standalone
@@ -37,7 +36,7 @@ import {
   IonText,
   IonChip,
   IonFooter,
-  type ToastController,
+  ToastController,
 } from "@ionic/angular/standalone"
 
 // Importar addIcons para los iconos
@@ -124,20 +123,21 @@ export class LightControlPage implements OnInit, OnDestroy {
   ) {
     // Registrar los iconos
     addIcons({
-      "bulb-outline": bulbOutline,
-      bulb: bulb,
-      "bluetooth-outline": bluetoothOutline,
-      bluetooth: bluetooth,
-      "timer-outline": timerOutline,
-      "contrast-outline": contrastOutline,
-      "flash-outline": flashOutline,
-      "chevron-up-outline": chevronUpOutline,
-      "chevron-down-outline": chevronDownOutline,
-      "color-wand-outline": colorWandOutline,
-      "add-outline": addOutline,
-      "close-outline": closeOutline,
-      "save-outline": saveOutline,
-    })
+      timerOutline,
+      contrastOutline,
+      flashOutline,
+      colorWandOutline,
+      addOutline,
+      closeOutline,
+      saveOutline,
+      bulbOutline,
+      bulb,
+      bluetoothOutline,
+      bluetooth,
+      chevronUpOutline,
+      chevronDownOutline
+    });
+
   }
 
   ngOnInit() {
@@ -304,6 +304,14 @@ export class LightControlPage implements OnInit, OnDestroy {
     if (light && light.isOn) {
       this.lightService.changeColor(lightId, color)
     }
+  }
+  getRangeValue(value: any): number {
+    if (typeof value === 'number') {
+      return value;
+    } else if (value && typeof value.lower === 'number') {
+      return value.lower; // O usa `value.upper` si necesitas el valor superior
+    }
+    return 0; // Valor por defecto si hay algún error
   }
 }
 

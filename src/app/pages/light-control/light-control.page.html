@@ -7,17 +7,11 @@
     <ion-buttons slot="end">
       <ion-button (click)="toggleBluetooth()">
         <ion-spinner *ngIf="bluetoothSearching" name="dots"></ion-spinner>
-        <ion-icon 
-          *ngIf="!bluetoothSearching"
-          [name]="bluetoothConnected ? 'bluetooth' : 'bluetooth-outline'" 
-          [color]="bluetoothConnected ? 'primary' : 'medium'"
-        ></ion-icon>
+        <ion-icon *ngIf="!bluetoothSearching" [name]="bluetoothConnected ? 'bluetooth' : 'bluetooth-outline'"
+          [color]="bluetoothConnected ? 'primary' : 'medium'"></ion-icon>
       </ion-button>
       <ion-button (click)="showTimerModal = true">
-        <ion-icon 
-          name="timer-outline" 
-          [color]="timerSettings.active ? 'success' : 'medium'"
-        ></ion-icon>
+        <ion-icon name="timer-outline" [color]="timerSettings.active ? 'success' : 'medium'"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -29,139 +23,92 @@
     <ion-row *ngFor="let light of lights">
       <ion-col size="12">
         <ion-card [ngClass]="{'light-card': true, 'light-on': light.isOn, 'light-off': !light.isOn}">
-          <div 
-            class="light-color-indicator" 
-            [style.background-color]="light.color"
-            [style.opacity]="light.isOn ? light.brightness / 100 : 0.2"
-          ></div>
-          
+          <div class="light-color-indicator" [style.background-color]="light.color"
+            [style.opacity]="light.isOn ? light.brightness / 100 : 0.2"></div>
+
           <ion-card-header>
             <ion-card-title class="light-title">
-              <ion-icon 
-                [name]="light.isOn ? 'bulb' : 'bulb-outline'" 
-                class="light-icon"
+              <ion-icon [name]="light.isOn ? 'bulb' : 'bulb-outline'" class="light-icon"
                 [style.color]="light.isOn ? light.color : 'var(--ion-color-medium)'"
-                [style.filter]="light.isOn ? 'brightness(' + light.brightness + '%)' : 'none'"
-              ></ion-icon>
+                [style.filter]="light.isOn ? 'brightness(' + light.brightness + '%)' : 'none'"></ion-icon>
               {{light.name}}
-              
-              <ion-toggle 
-                [checked]="light.isOn" 
-                (ionChange)="toggleLight(light.id)"
-                class="light-toggle"
-              ></ion-toggle>
+
+              <ion-toggle [checked]="light.isOn" (ionChange)="toggleLight(light.id)" class="light-toggle"></ion-toggle>
             </ion-card-title>
           </ion-card-header>
-          
+
           <ion-card-content>
             <!-- Controles básicos siempre visibles -->
             <div class="basic-controls">
               <div class="color-preview-container">
-                <div 
-                  class="color-preview" 
-                  [style.background-color]="light.color"
-                  [style.opacity]="light.isOn ? light.brightness / 100 : 0.3"
-                ></div>
+                <div class="color-preview" [style.background-color]="light.color"
+                  [style.opacity]="light.isOn ? light.brightness / 100 : 0.3"></div>
                 <div class="color-hex">{{light.color}}</div>
               </div>
-              
+
               <ion-item lines="none" [ngClass]="{'disabled-control': !light.isOn}">
-                <ion-range 
-                  min="0" 
-                  max="100" 
-                  [value]="light.brightness"
-                  (ionChange)="changeBrightness(light.id, $event)"
-                  [disabled]="!light.isOn"
-                  class="brightness-slider"
-                >
+                <ion-range min="0" max="100" [value]="light.brightness"
+                  (ionChange)="changeBrightness(light.id, $event.detail.value)" [disabled]="!light.isOn"
+                  class="brightness-slider">
                   <ion-icon slot="start" name="contrast-outline"></ion-icon>
                   <ion-icon slot="end" name="flash-outline"></ion-icon>
                 </ion-range>
               </ion-item>
             </div>
-            
+
             <!-- Botón para expandir/colapsar controles avanzados -->
-            <ion-button 
-              fill="clear" 
-              size="small" 
-              expand="block"
-              class="expand-button"
-              (click)="toggleExpandLight(light.id)"
-            >
-              <ion-icon slot="end" [name]="expandedLightId === light.id ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+            <ion-button fill="clear" size="small" expand="block" class="expand-button"
+              (click)="toggleExpandLight(light.id)">
+              <ion-icon slot="end"
+                [name]="expandedLightId === light.id ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
               {{expandedLightId === light.id ? 'Menos opciones' : 'Más opciones'}}
             </ion-button>
-            
+
             <!-- Controles avanzados (expandibles) -->
-            <div 
-              *ngIf="expandedLightId === light.id" 
-              [ngClass]="{'advanced-controls': true, 'disabled-control': !light.isOn}"
-            >
+            <div *ngIf="expandedLightId === light.id"
+              [ngClass]="{'advanced-controls': true, 'disabled-control': !light.isOn}">
               <!-- Selector de color -->
               <div class="color-wheel-container">
-                <input 
-                  type="color" 
-                  [value]="light.color"
-                  (change)="changeColor(light.id, $event)"
-                  [disabled]="!light.isOn"
-                  class="color-wheel"
-                />
+                <input type="color" [value]="light.color" (change)="changeColor(light.id, $event)"
+                  [disabled]="!light.isOn" class="color-wheel" />
               </div>
-              
+
               <!-- Controles RGB -->
               <div class="rgb-controls">
                 <ion-item lines="none">
                   <ion-label position="stacked" color="danger">R</ion-label>
-                  <ion-range 
-                    min="0" 
-                    max="255" 
-                    [value]="light.rgb.r"
-                    (ionChange)="changeRgbColor(light.id, 'r', $event.detail.value)"
-                    [disabled]="!light.isOn"
-                    color="danger"
-                  ></ion-range>
+                  <ion-range min="0" max="255" [value]="light.rgb.r"
+                    (ionChange)="changeRgbColor(light.id, 'r', getRangeValue($event.detail.value))" [disabled]="!light.isOn"
+                    color="danger"></ion-range>
                 </ion-item>
-                
+
                 <ion-item lines="none">
                   <ion-label position="stacked" color="success">G</ion-label>
-                  <ion-range 
-                    min="0" 
-                    max="255" 
-                    [value]="light.rgb.g"
-                    (ionChange)="changeRgbColor(light.id, 'g', $event.detail.value)"
-                    [disabled]="!light.isOn"
-                    color="success"
-                  ></ion-range>
+                  <ion-range min="0" max="255" [value]="light.rgb.g"
+                    (ionChange)="changeRgbColor(light.id, 'g', getRangeValue($event.detail.value))" [disabled]="!light.isOn"
+                    color="success"></ion-range>
                 </ion-item>
-                
+
                 <ion-item lines="none">
                   <ion-label position="stacked" color="primary">B</ion-label>
-                  <ion-range 
-                    min="0" 
-                    max="255" 
-                    [value]="light.rgb.b"
-                    (ionChange)="changeRgbColor(light.id, 'b', $event.detail.value)"
-                    [disabled]="!light.isOn"
-                    color="primary"
-                  ></ion-range>
+                  <ion-range min="0" max="255" [value]="light.rgb.b"
+                    (ionChange)="changeRgbColor(light.id, 'b', getRangeValue($event.detail.value))" [disabled]="!light.isOn"
+                    color="primary"></ion-range>
                 </ion-item>
               </div>
-              
+
               <!-- Presets rápidos -->
               <div class="quick-colors">
-                <div 
-                  *ngFor="let color of quickColors"
-                  [ngClass]="{'quick-color': true, 'selected': light.color === color}"
-                  [style.background-color]="color"
-                  (click)="applyQuickColor(light.id, color)"
-                ></div>
+                <div *ngFor="let color of quickColors"
+                  [ngClass]="{'quick-color': true, 'selected': light.color === color}" [style.background-color]="color"
+                  (click)="applyQuickColor(light.id, color)"></div>
               </div>
             </div>
           </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
-    
+
     <!-- Presets guardados -->
     <ion-row>
       <ion-col size="12">
@@ -176,22 +123,14 @@
             <div class="presets-container">
               <div *ngFor="let preset of presets" class="preset-item">
                 <div class="preset-colors">
-                  <div 
-                    *ngFor="let color of preset.colors"
-                    class="preset-color" 
-                    [style.background-color]="color"
-                  ></div>
+                  <div *ngFor="let color of preset.colors" class="preset-color" [style.background-color]="color"></div>
                 </div>
                 <div class="preset-name">{{preset.name}}</div>
-                <ion-button 
-                  fill="clear" 
-                  size="small"
-                  (click)="applyPreset(preset.id)"
-                >
+                <ion-button fill="clear" size="small" (click)="applyPreset(preset.id)">
                   Aplicar
                 </ion-button>
               </div>
-              
+
               <div class="preset-item add-preset" (click)="showSavePresetModal = true">
                 <div class="add-preset-icon">
                   <ion-icon name="add-outline"></ion-icon>
@@ -203,24 +142,16 @@
         </ion-card>
       </ion-col>
     </ion-row>
-    
+
     <!-- Botones de control global -->
     <ion-row>
       <ion-col size="12">
         <div class="global-controls">
-          <ion-button 
-            expand="block" 
-            color="success"
-            (click)="turnAllLightsOn()"
-          >
+          <ion-button expand="block" color="success" (click)="turnAllLightsOn()">
             <ion-icon name="flash-outline" slot="start"></ion-icon>
             Encender Todas
           </ion-button>
-          <ion-button 
-            expand="block" 
-            color="medium"
-            (click)="turnAllLightsOff()"
-          >
+          <ion-button expand="block" color="medium" (click)="turnAllLightsOff()">
             <ion-icon name="contrast-outline" slot="start"></ion-icon>
             Apagar Todas
           </ion-button>
@@ -228,7 +159,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  
+
   <!-- Modal de temporizador -->
   <ion-modal [isOpen]="showTimerModal" (didDismiss)="showTimerModal = false">
     <ng-template>
@@ -248,17 +179,12 @@
             <ion-label>Activar Temporizador</ion-label>
             <ion-toggle [(ngModel)]="timerSettings.active"></ion-toggle>
           </ion-item>
-          
+
           <ion-item>
             <ion-label>Intervalo (segundos)</ion-label>
-            <ion-input 
-              type="number" 
-              [(ngModel)]="timerSettings.interval"
-              min="1"
-              max="60"
-            ></ion-input>
+            <ion-input type="number" [(ngModel)]="timerSettings.interval" min="1" max="60"></ion-input>
           </ion-item>
-          
+
           <ion-item>
             <ion-label>Preset a utilizar</ion-label>
             <ion-select [(ngModel)]="timerSettings.selectedPresetId">
@@ -268,17 +194,14 @@
             </ion-select>
           </ion-item>
         </ion-list>
-        
-        <ion-button 
-          expand="block" 
-          (click)="saveTimerSettings()"
-        >
+
+        <ion-button expand="block" (click)="saveTimerSettings()">
           Guardar Configuración
         </ion-button>
       </ion-content>
     </ng-template>
   </ion-modal>
-  
+
   <!-- Modal para guardar preset -->
   <ion-modal [isOpen]="showSavePresetModal" (didDismiss)="showSavePresetModal = false">
     <ng-template>
@@ -295,32 +218,23 @@
       <ion-content class="ion-padding">
         <ion-item>
           <ion-label position="stacked">Nombre del Preset</ion-label>
-          <ion-input 
-            [(ngModel)]="newPresetName" 
-            placeholder="Ej: Fiesta, Relajación, etc."
-          ></ion-input>
+          <ion-input [(ngModel)]="newPresetName" placeholder="Ej: Fiesta, Relajación, etc."></ion-input>
         </ion-item>
-        
+
         <div class="preset-preview">
           <ion-label>Vista previa:</ion-label>
           <div class="preset-colors-preview">
-            <div 
-              *ngFor="let light of lights | filterBy: ['isOn']: true"
-              class="preset-color-preview" 
-              [style.background-color]="light.color"
-            ></div>
-            
+            <div *ngFor="let light of lights | filterBy: ['isOn']: true" class="preset-color-preview"
+              [style.background-color]="light.color"></div>
+
             <ion-text *ngIf="(lights | filterBy: ['isOn']: true).length === 0" color="medium">
               No hay luces encendidas para guardar
             </ion-text>
           </div>
         </div>
-        
-        <ion-button 
-          expand="block" 
-          (click)="saveNewPreset()"
-          [disabled]="(lights | filterBy: ['isOn']: true).length === 0"
-        >
+
+        <ion-button expand="block" (click)="saveNewPreset()"
+          [disabled]="(lights | filterBy: ['isOn']: true).length === 0">
           <ion-icon name="save-outline" slot="start"></ion-icon>
           Guardar Preset
         </ion-button>
@@ -336,7 +250,7 @@
         <ion-icon [name]="bluetoothConnected ? 'bluetooth' : 'bluetooth-outline'"></ion-icon>
         <ion-label>{{bluetoothConnected ? 'Conectado' : 'Desconectado'}}</ion-label>
       </ion-chip>
-      
+
       <ion-chip *ngIf="timerSettings.active" color="primary">
         <ion-icon name="timer-outline"></ion-icon>
         <ion-label>Temporizador Activo</ion-label>
@@ -344,4 +258,3 @@
     </div>
   </ion-toolbar>
 </ion-footer>
-
