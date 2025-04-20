@@ -20,6 +20,7 @@
     "module": "esnext",
     "lib": ["es2022", "dom"],
     "useDefineForClassFields": false,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@ionic/angular": ["node_modules/@ionic/angular"]
     }

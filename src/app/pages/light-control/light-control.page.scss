@@ -1,3 +1,35 @@
+// Añadir estilos para el menú
+.menu-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+  
+  ion-avatar {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    ion-icon {
+      font-size: 60px;
+      color: var(--ion-color-primary);
+    }
+  }
+  
+  .user-email {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    text-align: center;
+    margin-top: 5px;
+  }
+}
+
 // Variables
 :root {
   --glow-primary: #ff5500;

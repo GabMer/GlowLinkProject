@@ -1,5 +1,4 @@
-// Actualizar los imports para usar @ionic/angular/standalone
-import { Component,  OnInit,  OnDestroy } from "@angular/core"
+import { Component, OnInit, OnDestroy } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
 import { Router } from "@angular/router"
@@ -8,6 +7,7 @@ import { Light, Preset, TimerSettings } from "../../models/light.model"
 import { LightService } from "../../services/light.service"
 import { BluetoothService } from "../../services/bluetooth.service"
 import { FilterByPipe } from "../../pipes/filter-by.pipe"
+import { AuthService } from "../../services/auth.service"
 
 // Importar componentes Ionic desde standalone
 import {
@@ -43,6 +43,10 @@ import {
   IonFabButton,
   ToastController,
   IonBadge,
+  IonMenuButton,
+  IonMenu,
+  IonMenuToggle,
+  IonAvatar,
 } from "@ionic/angular/standalone"
 
 // Importar addIcons para los iconos
@@ -64,6 +68,11 @@ import {
   eyeOutline,
   checkmarkCircleOutline,
   arrowForward,
+  menuOutline,
+  logOutOutline,
+  personCircleOutline,
+  settingsOutline,
+  homeOutline,
 } from "ionicons/icons"
 
 @Component({
@@ -107,6 +116,10 @@ import {
     IonFab,
     IonFabButton,
     IonBadge,
+    IonMenuButton,
+    IonMenu,
+    IonMenuToggle,
+    IonAvatar,
   ],
 })
 export class LightControlPage implements OnInit, OnDestroy {
@@ -116,6 +129,7 @@ export class LightControlPage implements OnInit, OnDestroy {
   timerSettings: TimerSettings = { active: false, interval: 5, selectedPresetId: 1 }
   bluetoothConnected = false
   bluetoothSearching = false
+  userEmail: string | null = null
 
   // Estados de UI
   showTimerModal = false
@@ -135,6 +149,7 @@ export class LightControlPage implements OnInit, OnDestroy {
     private bluetoothService: BluetoothService,
     private toastController: ToastController,
     private router: Router,
+    private authService: AuthService,
   ) {
     // Registrar los iconos
     addIcons({
@@ -154,10 +169,22 @@ export class LightControlPage implements OnInit, OnDestroy {
       "eye-outline": eyeOutline,
       "checkmark-circle-outline": checkmarkCircleOutline,
       "arrow-forward": arrowForward,
+      "menu-outline": menuOutline,
+      "log-out-outline": logOutOutline,
+      "person-circle-outline": personCircleOutline,
+      "settings-outline": settingsOutline,
+      "home-outline": homeOutline,
     })
   }
 
   ngOnInit() {
+    // Obtener información del usuario actual
+    this.subscriptions.push(
+      this.authService.currentUser$.subscribe((user) => {
+        this.userEmail = user?.email ?? null
+      }),
+    )
+
     // Suscribirse a los cambios en los servicios
     this.subscriptions.push(
       this.lightService.lights$.subscribe((lights) => {
@@ -188,6 +215,15 @@ export class LightControlPage implements OnInit, OnDestroy {
 
     // Asegurarse de que el temporizador se detenga
     this.lightService.clearTimer()
+  }
+
+  /**
+   * Cierra la sesión del usuario
+   */
+  logout() {
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(["/welcome"])
+    })
   }
 
   /**

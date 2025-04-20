@@ -1,0 +1,28 @@
+<ion-page> <ion-content fullscreen class="welcome-content">
+        <div class="welcome-container">
+            <div class="logo-container">
+                <div class="app-logo"> <span class="logo-text">GL</span> </div>
+                <h1 class="app-name">GlowLink</h1>
+            </div>
+            php-template
+            Copiar
+            Editar
+            <div class="welcome-text">
+                <h2>ILUMINA Y SINCRONIZA TU MUNDO.</h2>
+                <p>Controla tus luces inteligentes desde cualquier lugar</p>
+            </div>
+
+            <div class="welcome-actions">
+                <ion-button expand="block" class="login-button" (click)="handleLogin()">
+                    Inicia Sesión
+                </ion-button>
+            </div>
+        </div>
+
+        <div class="fireworks-bg"></div>
+    </ion-content> <ion-footer class="welcome-footer"> <ion-toolbar>
+            <div class="register-link"> <ion-text color="light">¿No tienes una cuenta?</ion-text> <ion-router-link
+                    (click)="handleRegister()">Regístrate</ion-router-link> </div>
+        </ion-toolbar>
+    </ion-footer>
+</ion-page>

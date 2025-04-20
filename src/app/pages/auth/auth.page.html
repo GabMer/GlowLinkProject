@@ -1,0 +1,141 @@
+<ion-page>
+    <ion-header class="auth-header">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/welcome" icon="arrow-back" text=""></ion-back-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+  
+    <ion-content fullscreen class="auth-content">
+      <div class="auth-container">
+        <ion-card class="auth-card">
+          <ion-card-header>
+            <ion-segment [value]="activeTab" (ionChange)="handleTabChange($event)">
+              <ion-segment-button value="login">
+                <ion-label>Inicio de Sesión</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="register">
+                <ion-label>Regístrate</ion-label>
+              </ion-segment-button>
+            </ion-segment>
+  
+            <ion-card-title class="auth-title">
+              {{ activeTab === 'login' ? 'BIENVENIDO' : 'ÚNETE A NOSOTROS' }}
+            </ion-card-title>
+          </ion-card-header>
+  
+          <ion-card-content>
+            <!-- Formulario de inicio de sesión -->
+            <div class="auth-form" *ngIf="activeTab === 'login'">
+              <ion-item class="auth-input">
+                <ion-icon name="mail-outline" slot="start"></ion-icon>
+                <ion-input 
+                  label="Email" 
+                  labelPlacement="floating" 
+                  type="email" 
+                  placeholder="tu@email.com"
+                  [(ngModel)]="loginEmail"
+                ></ion-input>
+              </ion-item>
+  
+              <ion-item class="auth-input">
+                <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+                <ion-input 
+                  label="Contraseña" 
+                  labelPlacement="floating" 
+                  type="password" 
+                  placeholder="••••••••"
+                  [(ngModel)]="loginPassword"
+                ></ion-input>
+              </ion-item>
+  
+              <ion-button 
+                expand="block" 
+                class="auth-button" 
+                (click)="handleLogin()"
+                [disabled]="isLoading"
+              >
+                <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
+                <span *ngIf="!isLoading">Inicia Sesión</span>
+              </ion-button>
+  
+              <div class="forgot-password">
+                <ion-router-link (click)="handleForgotPassword()">¿Olvidaste tu contraseña?</ion-router-link>
+              </div>
+            </div>
+  
+            <!-- Formulario de registro -->
+            <div class="auth-form" *ngIf="activeTab === 'register'">
+              <ion-item class="auth-input">
+                <ion-icon name="person-outline" slot="start"></ion-icon>
+                <ion-input 
+                  label="Nombre" 
+                  labelPlacement="floating" 
+                  type="text" 
+                  placeholder="Tu nombre"
+                  [(ngModel)]="registerName"
+                ></ion-input>
+              </ion-item>
+  
+              <ion-item class="auth-input">
+                <ion-icon name="mail-outline" slot="start"></ion-icon>
+                <ion-input 
+                  label="Email" 
+                  labelPlacement="floating" 
+                  type="email" 
+                  placeholder="tu@email.com"
+                  [(ngModel)]="registerEmail"
+                ></ion-input>
+              </ion-item>
+  
+              <ion-item class="auth-input">
+                <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+                <ion-input 
+                  label="Contraseña" 
+                  labelPlacement="floating" 
+                  type="password" 
+                  placeholder="••••••••"
+                  [(ngModel)]="registerPassword"
+                ></ion-input>
+              </ion-item>
+  
+              <ion-item class="auth-input">
+                <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+                <ion-input 
+                  label="Confirmar Contraseña" 
+                  labelPlacement="floating" 
+                  type="password" 
+                  placeholder="••••••••"
+                  [(ngModel)]="registerConfirmPassword"
+                ></ion-input>
+              </ion-item>
+  
+              <ion-button 
+                expand="block" 
+                class="auth-button" 
+                (click)="handleRegister()"
+                [disabled]="isLoading"
+              >
+                <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
+                <span *ngIf="!isLoading">Registrar</span>
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+  
+      <div class="fireworks-bg"></div>
+      
+      <!-- Toast para mensajes de error -->
+      <ion-toast
+        [isOpen]="showToast"
+        [message]="errorMessage"
+        [duration]="3000"
+        [color]="'danger'"
+        [position]="'bottom'"
+        (didDismiss)="showToast = false"
+      ></ion-toast>
+    </ion-content>
+  </ion-page>
+  
