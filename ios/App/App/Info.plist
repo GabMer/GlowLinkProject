@@ -1,0 +1,4 @@
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>Necesitamos acceso a Bluetooth para conectar con dispositivos de iluminación GlowLink.</string>
+<key>NSBluetoothPeripheralUsageDescription</key>
+<string>Necesitamos acceso a Bluetooth para conectar con dispositivos de iluminación GlowLink.</string>
