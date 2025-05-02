@@ -136,6 +136,7 @@
 ├── tsconfig.spec.json        # Configuración para pruebas
 └── README.md                 # Documentación del proyecto
 9. Sobre Su proyecto
+    
         Este proyecto está inspirado en los espectáculos de luces sincronizadas, donde varios celulares pueden mostrar efectos al mismo tiempo.
 
     Características principales:
