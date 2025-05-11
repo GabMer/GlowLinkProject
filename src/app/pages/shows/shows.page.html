@@ -1,0 +1,30 @@
+<ion-content class="ion-padding main-content">
+  <div class="logo-container">
+    <img src="assets/logo.svg" alt="GlowLink Logo" class="logo">
+    <h1 class="title">GlowLink</h1>
+    <p class="subtitle">Seleccione un modo de espectáculo</p>
+  </div>
+  
+  <div class="shows-container">
+    <div *ngFor="let show of shows" 
+         class="show-item" 
+         [style.background-color]="show.color"
+         (click)="selectShow(show.id)">
+      <div class="show-icon">
+        <ion-icon [name]="show.icon" [style.color]="show.iconColor"></ion-icon>
+      </div>
+      <div class="show-content">
+        <h2 [style.color]="show.textColor">{{ show.name }}</h2>
+        <p [style.color]="show.textColor">{{ show.description }}</p>
+      </div>
+      <div class="show-arrow">
+        <ion-icon name="chevron-forward" [style.color]="show.iconColor"></ion-icon>
+      </div>
+    </div>
+  </div>
+  
+  <ion-button expand="block" class="connect-button" (click)="connectDevices()">
+    <ion-icon name="bluetooth" slot="start"></ion-icon>
+    Conectar dispositivos
+  </ion-button>
+</ion-content>

@@ -1,0 +1,230 @@
+ion-toolbar {
+  --background: #1a1a1a;
+  --color: white;
+}
+
+.main-content {
+  --background: #000000;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+.mode-indicator {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  
+  .mode-badge {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 0, 0, 0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    
+    ion-icon {
+      margin-right: 8px;
+      font-size: 20px;
+      color: #ff0000;
+    }
+    
+    span {
+      color: white;
+      font-weight: 500;
+    }
+    
+    &.custom-mode {
+      background-color: rgba(255, 0, 0, 0.3);
+    }
+    
+    &.music-mode {
+      background-color: rgba(255, 0, 0, 0.15);
+      opacity: 0.8;
+    }
+  }
+}
+
+.custom-controls {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  
+  h2 {
+    color: white;
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    color: #cccccc;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .color-picker {
+    margin-bottom: 16px;
+    
+    .color-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      
+      .color-option {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: transform 0.2s;
+        
+        &.selected {
+          border-color: white;
+          transform: scale(1.1);
+        }
+        
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+    }
+    
+    &.small {
+      .color-option {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
+  
+  .brightness-control {
+    margin-bottom: 16px;
+    
+    ion-range {
+      --bar-background: rgba(255, 255, 255, 0.2);
+      --bar-background-active: linear-gradient(to right, #700000, #ff0000);
+      --knob-background: #ff0000;
+      --pin-background: #ff0000;
+      --pin-color: white;
+    }
+  }
+  
+  .apply-button {
+    --background: #ff0000;
+    --background-activated: #cc0000;
+    --color: white;
+    margin-top: 8px;
+  }
+}
+
+.music-mode-message {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  
+  ion-icon {
+    font-size: 24px;
+    color: #ff0000;
+    margin-right: 12px;
+  }
+  
+  p {
+    color: #cccccc;
+    margin: 0;
+  }
+}
+
+.lights-section {
+  h2 {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  
+  .lights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    
+    .light-item {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      
+      &.disconnected {
+        opacity: 0.6;
+      }
+      
+      .light-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        
+        .light-info {
+          display: flex;
+          align-items: center;
+          
+          .light-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            
+            ion-icon {
+              color: white;
+              font-size: 20px;
+            }
+          }
+          
+          .light-details {
+            h3 {
+              color: white;
+              font-size: 16px;
+              margin: 0 0 4px;
+            }
+            
+            p {
+              color: #cccccc;
+              font-size: 14px;
+              margin: 0;
+            }
+          }
+        }
+        
+        ion-toggle {
+          --background: rgba(255, 255, 255, 0.2);
+          --background-checked: rgba(255, 0, 0, 0.5);
+          --handle-background: white;
+          --handle-background-checked: #ff0000;
+        }
+      }
+      
+      .light-controls {
+        .individual-controls {
+          margin-top: 12px;
+        }
+        
+        .effect-selector {
+          ion-select {
+            --placeholder-color: #cccccc;
+            --placeholder-opacity: 0.8;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}

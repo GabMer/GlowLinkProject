@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Luces Seleccionadas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding main-content">
+  <div class="header-container">
+    <h1>Luces Conectadas</h1>
+    <p>{{ connectedLights.length }} luces activas</p>
+  </div>
+  
+  <div class="lights-container" *ngIf="connectedLights.length > 0">
+    <div *ngFor="let light of connectedLights" class="light-card">
+      <div class="light-icon" [style.background-color]="light.color">
+        <ion-icon name="bulb"></ion-icon>
+      </div>
+      <div class="light-info">
+        <h2>{{ light.name }}</h2>
+        <p>Brillo: {{ light.brightness }}%</p>
+      </div>
+      <ion-button fill="clear" color="danger" (click)="disconnectLight(light.id)">
+        <ion-icon name="close-circle"></ion-icon>
+      </ion-button>
+    </div>
+    
+    <ion-button expand="block" class="disconnect-all-button" (click)="disconnectAll()">
+      Desconectar todas
+    </ion-button>
+  </div>
+  
+  <div class="empty-state" *ngIf="connectedLights.length === 0">
+    <ion-icon name="bulb-outline"></ion-icon>
+    <h2>No hay luces conectadas</h2>
+    <p>Conecta algunas luces para controlarlas</p>
+    <ion-button expand="block" class="back-button" (click)="goBack()">
+      Volver al control
+    </ion-button>
+  </div>
+</ion-content>

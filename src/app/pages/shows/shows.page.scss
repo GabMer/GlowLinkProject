@@ -1,0 +1,131 @@
+.main-content {
+  --background: #000000;
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  
+  .logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+  
+  .title {
+    color: white;
+    font-size: 28px;
+    margin: 0;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+  }
+  
+  .subtitle {
+    color: #cccccc;
+    font-size: 16px;
+    margin: 5px 0 0;
+  }
+}
+
+.shows-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 30px;
+  flex: 1;
+}
+
+.show-item {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .show-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(255, 0, 0, 0.1);
+    margin-right: 16px;
+    
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+  
+  .show-content {
+    flex: 1;
+    
+    h2 {
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+  }
+  
+  .show-arrow {
+    margin-left: 10px;
+    
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+.connect-button {
+  --background: #ff0000;
+  --background-activated: #cc0000;
+  --color: white;
+  margin-top: 10px;
+  height: 50px;
+  font-weight: 600;
+  font-size: 16px;
+  --border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(255, 0, 0, 0.3);
+}
+
+// Estilo para la opción deshabilitada (música)
+.show-item:last-child {
+  opacity: 0.8;
+  position: relative;
+  
+  &::after {
+    content: "Próximamente";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Conexión Bluetooth</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToLightControl()" [disabled]="isScanning">
+        <ion-icon name="bulb"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding main-content">
+  <div class="header-container">
+    <div class="bluetooth-icon">
+      <ion-icon name="bluetooth"></ion-icon>
+    </div>
+    <h1>Dispositivos Bluetooth</h1>
+    <p>Conecta tus luces GlowLink</p>
+  </div>
+  
+  <div class="scan-section">
+    <ion-button expand="block" (click)="scanForDevices()" [disabled]="isScanning">
+      <ion-icon name="search" slot="start"></ion-icon>
+      {{ isScanning ? 'Escaneando...' : 'Buscar dispositivos' }}
+    </ion-button>
+  </div>
+  
+  <div class="devices-container">
+    <h2>Dispositivos disponibles</h2>
+    
+    <div class="loading-indicator" *ngIf="isScanning">
+      <ion-spinner name="crescent" color="danger"></ion-spinner>
+      <p>Buscando dispositivos cercanos...</p>
+    </div>
+    
+    <div class="devices-list" *ngIf="!isScanning">
+      <div *ngFor="let light of availableLights" class="device-item">
+        <div class="device-info">
+          <div class="device-icon" [style.background-color]="light.connected ? light.color : '#333333'">
+            <ion-icon name="bulb"></ion-icon>
+          </div>
+          <div class="device-details">
+            <h3>{{ light.name }}</h3>
+            <p>{{ light.connected ? 'Conectado' : 'Disponible' }}</p>
+          </div>
+        </div>
+        
+        <ion-toggle [(ngModel)]="light.connected" (ionChange)="toggleConnection(light)"></ion-toggle>
+      </div>
+      
+      <div class="empty-state" *ngIf="availableLights.length === 0">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <p>No se encontraron dispositivos</p>
+        <p class="hint">Asegúrate de que tus luces estén encendidas y cerca</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="help-section">
+    <h3>¿Problemas para conectar?</h3>
+    <ul>
+      <li>Asegúrate de que el Bluetooth esté activado</li>
+      <li>Verifica que las luces estén encendidas</li>
+      <li>Mantén las luces a menos de 10 metros</li>
+      <li>Reinicia las luces si es necesario</li>
+    </ul>
+  </div>
+</ion-content>

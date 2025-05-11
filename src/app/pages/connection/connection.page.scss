@@ -1,0 +1,194 @@
+ion-toolbar {
+  --background: #1a1a1a;
+  --color: white;
+}
+
+.main-content {
+  --background: #000000;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  
+  .bluetooth-icon {
+    width: 64px;
+    height: 64px;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    
+    ion-icon {
+      font-size: 32px;
+      color: #ff0000;
+    }
+  }
+  
+  h1 {
+    color: white;
+    font-size: 24px;
+    margin: 0 0 8px;
+    text-align: center;
+  }
+  
+  p {
+    color: #cccccc;
+    font-size: 16px;
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.scan-section {
+  margin-bottom: 24px;
+  
+  ion-button {
+    --background: #ff0000;
+    --background-activated: #cc0000;
+    --color: white;
+    height: 48px;
+  }
+}
+
+.devices-container {
+  margin-bottom: 24px;
+  
+  h2 {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  
+  .loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    
+    ion-spinner {
+      margin-bottom: 16px;
+    }
+    
+    p {
+      color: #cccccc;
+      text-align: center;
+      margin: 0;
+    }
+  }
+  
+  .devices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    .device-item {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      
+      .device-info {
+        display: flex;
+        align-items: center;
+        
+        .device-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 12px;
+          
+          ion-icon {
+            color: white;
+            font-size: 20px;
+          }
+        }
+        
+        .device-details {
+          h3 {
+            color: white;
+            font-size: 16px;
+            margin: 0 0 4px;
+          }
+          
+          p {
+            color: #cccccc;
+            font-size: 14px;
+            margin: 0;
+          }
+        }
+      }
+      
+      ion-toggle {
+        --background: rgba(255, 255, 255, 0.2);
+        --background-checked: rgba(255, 0, 0, 0.5);
+        --handle-background: white;
+        --handle-background-checked: #ff0000;
+      }
+    }
+    
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0;
+      text-align: center;
+      
+      ion-icon {
+        font-size: 48px;
+        color: rgba(255, 255, 255, 0.2);
+        margin-bottom: 16px;
+      }
+      
+      p {
+        color: #cccccc;
+        margin: 0 0 8px;
+        
+        &.hint {
+          font-size: 14px;
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+}
+
+.help-section {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  
+  h3 {
+    color: white;
+    font-size: 16px;
+    margin: 0 0 12px;
+  }
+  
+  ul {
+    color: #cccccc;
+    margin: 0;
+    padding-left: 20px;
+    
+    li {
+      margin-bottom: 8px;
+      font-size: 14px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

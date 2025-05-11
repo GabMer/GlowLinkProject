@@ -1,0 +1,117 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Control de Luces</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToSelectedLights()">
+        <ion-icon name="bulb"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding main-content">
+  <div class="mode-indicator">
+    <div class="mode-badge" [ngClass]="{'custom-mode': isCustomMode, 'music-mode': isMusicMode}">
+      <ion-icon [name]="isCustomMode ? 'options' : (isMusicMode ? 'musical-notes' : 'color-palette')"></ion-icon>
+      <span>{{ isCustomMode ? 'Modo Personalizado' : (isMusicMode ? 'Modo Música' : 'Modo Predeterminado') }}</span>
+    </div>
+  </div>
+
+  <!-- Controles personalizados (solo visibles en modo personalizado) -->
+  <div class="custom-controls" *ngIf="isCustomMode">
+    <h2>Personalizar todas las luces</h2>
+    
+    <div class="color-picker">
+      <h3>Color</h3>
+      <div class="color-options">
+        <div *ngFor="let color of predefinedColors" 
+             class="color-option" 
+             [style.background-color]="color"
+             [class.selected]="selectedColor === color"
+             (click)="selectedColor = color">
+        </div>
+      </div>
+    </div>
+    
+    <div class="brightness-control">
+      <h3>Brillo: {{ selectedBrightness }}%</h3>
+      <ion-range [(ngModel)]="selectedBrightness" min="0" max="100" step="5" color="danger">
+        <ion-icon slot="start" name="sunny-outline" size="small"></ion-icon>
+        <ion-icon slot="end" name="sunny" size="small"></ion-icon>
+      </ion-range>
+    </div>
+    
+    <ion-button expand="block" class="apply-button" (click)="applyToAllLights()">
+      Aplicar a todas las luces
+    </ion-button>
+  </div>
+
+  <!-- Mensaje para modo música -->
+  <div class="music-mode-message" *ngIf="isMusicMode">
+    <ion-icon name="alert-circle"></ion-icon>
+    <p>El modo sincronizado con música estará disponible en una versión futura.</p>
+  </div>
+
+  <!-- Lista de luces disponibles -->
+  <div class="lights-section">
+    <h2>Luces disponibles</h2>
+    
+    <div class="lights-list">
+      <div *ngFor="let light of lights" class="light-item" [class.disconnected]="!light.connected">
+        <div class="light-header">
+          <div class="light-info">
+            <div class="light-icon" [style.background-color]="light.color">
+              <ion-icon name="bulb"></ion-icon>
+            </div>
+            <div class="light-details">
+              <h3>{{ light.name }}</h3>
+              <p *ngIf="light.connected">Conectada • {{ getEffectName(light.selectedEffect) }}</p>
+              <p *ngIf="!light.connected">Desconectada</p>
+            </div>
+          </div>
+          
+          <ion-toggle [(ngModel)]="light.connected" (ionChange)="toggleLightConnection(light)"></ion-toggle>
+        </div>
+        
+        <div class="light-controls" *ngIf="light.connected">
+          <!-- Controles específicos para cada luz en modo personalizado -->
+          <div *ngIf="isCustomMode" class="individual-controls">
+            <div class="color-picker small">
+              <div *ngFor="let color of predefinedColors" 
+                   class="color-option" 
+                   [style.background-color]="color"
+                   [class.selected]="light.color === color"
+                   (click)="updateLightColor(light.id, color)">
+              </div>
+            </div>
+            
+            <div class="brightness-control">
+              <ion-range [(ngModel)]="light.brightness" min="0" max="100" step="5" color="danger"
+                        (ionChange)="updateLightBrightness(light.id, $event)">
+                <ion-icon slot="start" name="sunny-outline" size="small"></ion-icon>
+                <ion-icon slot="end" name="sunny" size="small"></ion-icon>
+              </ion-range>
+            </div>
+          </div>
+          
+          <!-- Selector de efectos para modo predeterminado -->
+          <div *ngIf="!isCustomMode && !isMusicMode" class="effect-selector">
+            <ion-select [(ngModel)]="light.selectedEffect" 
+                       (ionChange)="updateLightEffect(light.id, light.selectedEffect || '')"
+                       interface="popover" 
+                       placeholder="Seleccionar efecto">
+              <ion-select-option *ngFor="let effect of effects" [value]="effect.id">
+                {{ effect.name }}
+              </ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
