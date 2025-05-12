@@ -12,6 +12,7 @@ import { FilterByPipe } from "../../pipes/filter-by.pipe"
     CommonModule,
     FormsModule,
     IonicModule,
+    LightControlPage, FilterByPipe,
     
     RouterModule.forChild([
       {
@@ -20,7 +21,7 @@ import { FilterByPipe } from "../../pipes/filter-by.pipe"
       },
     ]),
   ],
-  declarations: [LightControlPage, FilterByPipe],
+  declarations: [],
 })
 export class LightControlPageModule {}
 

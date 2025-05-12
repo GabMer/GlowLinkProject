@@ -13,7 +13,7 @@
     </div>
     
     <ion-list lines="none">
-      <ion-item button routerLink="/light-control" routerDirection="root" detail="false">
+      <ion-item button (click)="goToHome()" detail="false">
         <ion-icon name="home-outline" slot="start"></ion-icon>
         <ion-label>Inicio</ion-label>
       </ion-item>
@@ -411,4 +411,3 @@
     </ion-toolbar>
   </ion-footer>
 </div>
-

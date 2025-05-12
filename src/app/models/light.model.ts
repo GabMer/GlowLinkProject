@@ -12,9 +12,8 @@ export interface Light {
   brightness: number
   rgb: RGB
   selected?: boolean
-  isFlashing?: boolean; 
+  isFlashing?: boolean
 }
-
 
 export interface Preset {
   id: number
@@ -28,3 +27,4 @@ export interface TimerSettings {
   selectedPresetId: number
 }
 
+// Eliminamos el enum LightMode para simplificar

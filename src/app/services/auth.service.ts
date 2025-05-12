@@ -3,6 +3,7 @@ import { BehaviorSubject, from, type Observable } from "rxjs"
 import { map } from "rxjs/operators"
 import { initializeApp } from "firebase/app"
 import { getAnalytics } from "firebase/analytics"
+
 import {
   getAuth,
   createUserWithEmailAndPassword,

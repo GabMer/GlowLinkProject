@@ -68,4 +68,3 @@ export class BluetoothService {
     return Promise.resolve(true)
   }
 }
-

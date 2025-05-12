@@ -151,29 +151,29 @@ export class LightControlPage implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
   ) {
-    // Registrar los iconos
+    // Registrar los iconos (sin duplicados ni strings innecesarios)
     addIcons({
-      "bulb-outline": bulbOutline,
-      bulb: bulb,
-      "bluetooth-outline": bluetoothOutline,
-      bluetooth: bluetooth,
-      "timer-outline": timerOutline,
-      "contrast-outline": contrastOutline,
-      "flash-outline": flashOutline,
-      "chevron-up-outline": chevronUpOutline,
-      "chevron-down-outline": chevronDownOutline,
-      "color-wand-outline": colorWandOutline,
-      "add-outline": addOutline,
-      "close-outline": closeOutline,
-      "save-outline": saveOutline,
-      "eye-outline": eyeOutline,
-      "checkmark-circle-outline": checkmarkCircleOutline,
-      "arrow-forward": arrowForward,
-      "menu-outline": menuOutline,
-      "log-out-outline": logOutOutline,
-      "person-circle-outline": personCircleOutline,
-      "settings-outline": settingsOutline,
-      "home-outline": homeOutline,
+      personCircleOutline,
+      homeOutline,
+      settingsOutline,
+      logOutOutline,
+      timerOutline,
+      contrastOutline,
+      flashOutline,
+      colorWandOutline,
+      addOutline,
+      arrowForward,
+      closeOutline,
+      saveOutline,
+      eyeOutline,
+      bulbOutline,
+      bulb,
+      bluetoothOutline,
+      bluetooth,
+      chevronUpOutline,
+      chevronDownOutline,
+      checkmarkCircleOutline,
+      menuOutline,
     })
   }
 
@@ -224,6 +224,13 @@ export class LightControlPage implements OnInit, OnDestroy {
     this.authService.logout().subscribe(() => {
       this.router.navigate(["/welcome"])
     })
+  }
+
+  /**
+   * Navega a la página de inicio
+   */
+  goToHome() {
+    this.router.navigate(["/home"])
   }
 
   /**
@@ -413,4 +420,3 @@ export class LightControlPage implements OnInit, OnDestroy {
     }
   }
 }
-

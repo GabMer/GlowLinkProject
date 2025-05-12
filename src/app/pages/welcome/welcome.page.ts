@@ -1,13 +1,7 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
-import { Router } from "@angular/router"
+import  { Router } from "@angular/router"
 import { CommonModule } from "@angular/common"
-import { IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/angular/standalone"
-import {
-  IonButton,
-  IonText,
-  IonRouterLink,
-  IonFooter,
-} from "@ionic/angular/standalone"
+import { IonicModule } from "@ionic/angular"
 import { AuthService } from "../../services/auth.service"
 
 @Component({
@@ -15,7 +9,7 @@ import { AuthService } from "../../services/auth.service"
   templateUrl: "./welcome.page.html",
   styleUrls: ["./welcome.page.scss"],
   standalone: true,
-  imports: [CommonModule, IonContent, IonButton, IonText, IonRouterLink, IonFooter, IonToolbar],
+  imports: [CommonModule, IonicModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class WelcomePage implements OnInit {
@@ -28,8 +22,8 @@ export class WelcomePage implements OnInit {
     // Verificar si el usuario ya está autenticado
     this.authService.isAuthenticated$.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
-        // Si ya está autenticado, redirigir al control de luces
-        this.router.navigate(["/light-control"])
+        // Si ya está autenticado, redirigir a home
+        this.router.navigate(["/home"])
       }
     })
   }
@@ -44,4 +38,3 @@ export class WelcomePage implements OnInit {
 }
 
 export default WelcomePage
-

@@ -2,58 +2,17 @@ import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
-import { IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/angular/standalone"
-import {
-  IonButton,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonSegment,
-  IonSegmentButton,
-  IonRouterLink,
-  IonIcon,
-  IonBackButton,
-  IonButtons,
-  IonSpinner,
-  IonToast,
-   ToastController,
-} from "@ionic/angular/standalone"
+import { IonicModule, ToastController } from "@ionic/angular"
 import { addIcons } from "ionicons"
 import { mailOutline, lockClosedOutline, personOutline, arrowBack } from "ionicons/icons"
-import  { AuthService } from "../../services/auth.service"
+import { AuthService } from "../../services/auth.service"
 
 @Component({
   selector: "app-auth",
   templateUrl: "./auth.page.html",
   styleUrls: ["./auth.page.scss"],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonContent,
-    IonButton,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonSegment,
-    IonSegmentButton,
-    IonRouterLink,
-    IonIcon,
-    IonBackButton,
-    IonButtons,
-    IonHeader,
-    IonToolbar,
-    IonSpinner,
-    IonToast,
-  ],
+  imports: [CommonModule, FormsModule, IonicModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AuthPage implements OnInit {
@@ -112,7 +71,7 @@ export class AuthPage implements OnInit {
 
     try {
       await this.authService.login(this.loginEmail, this.loginPassword).toPromise()
-      this.router.navigate(["/light-control"])
+      this.router.navigate(["/home"])
     } catch (error: any) {
       this.handleAuthError(error)
     } finally {
@@ -131,7 +90,7 @@ export class AuthPage implements OnInit {
     try {
       await this.authService.register(this.registerEmail, this.registerPassword).toPromise()
       this.showSuccessToast("Cuenta creada exitosamente")
-      this.router.navigate(["/light-control"])
+      this.router.navigate(["/home"])
     } catch (error: any) {
       this.handleAuthError(error)
     } finally {
@@ -226,4 +185,3 @@ export class AuthPage implements OnInit {
 }
 
 export default AuthPage
-

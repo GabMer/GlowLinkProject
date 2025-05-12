@@ -1,7 +1,16 @@
-import { Routes } from "@angular/router"
+import type { Routes } from "@angular/router"
 import { AuthGuard } from "./guards/auth.guard"
 
 export const routes: Routes = [
+  {
+    path: "logo",
+    loadChildren: () => import("./pages/logo/logo.module").then((m) => m.WelcomePageModule),
+  },
+  {
+    path: "home",
+    loadChildren: () => import("./pages/home/home.module").then((m) => m.HomePageModule),
+    canActivate: [AuthGuard],
+  },
   {
     path: "light-control",
     loadComponent: () => import("./pages/light-control/light-control.page").then((m) => m.LightControlPage),
@@ -22,8 +31,7 @@ export const routes: Routes = [
   },
   {
     path: "",
-    redirectTo: "welcome",
+    redirectTo: "logo",
     pathMatch: "full",
   },
 ]
-

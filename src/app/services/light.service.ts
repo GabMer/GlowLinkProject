@@ -5,7 +5,6 @@ import type { Light, Preset, TimerSettings, RGB } from "../models/light.model"
 @Injectable({
   providedIn: "root",
 })
-
 export class LightService {
   // Estado inicial de las luces
   private initialLights: Light[] = [
@@ -318,5 +317,14 @@ export class LightService {
   private rgbToHex(r: number, g: number, b: number): string {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
   }
-}
 
+  /**
+   * Establece el modo de funcionamiento de las luces
+   * @param mode Modo de funcionamiento
+   */
+  public setMode(mode: string): void {
+    console.log(`Modo de luces establecido a: ${mode}`)
+    // Aquí puedes implementar la lógica específica para cada modo
+    // Por ahora solo registramos el cambio en la consola
+  }
+}
