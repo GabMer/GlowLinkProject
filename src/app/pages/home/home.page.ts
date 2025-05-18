@@ -1,15 +1,15 @@
 import { Component } from "@angular/core"
-import { RouterModule, Router } from "@angular/router"
+import { Router } from "@angular/router"
+import { LightService } from "../../services/light.service"
 import { IonicModule } from "@ionic/angular"
 import { CommonModule } from "@angular/common"
-import { LightService } from "../../services/light.service"
 
 @Component({
   selector: "app-home",
-  standalone: true,
   templateUrl: "./home.page.html",
   styleUrls: ["./home.page.scss"],
-  imports: [CommonModule, IonicModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, IonicModule],
 })
 export class HomePage {
   shows = [
@@ -34,13 +34,13 @@ export class HomePage {
     {
       id: "music",
       name: "Sincronizado con música",
-      description: "Los efectos se adaptan al ritmo (en versión futura)",
+      description: "Los efectos se adaptan al ritmo",
       icon: "musical-notes",
       color: "#1a1a1a",
       iconColor: "#ff0000",
       textColor: "#ffffff",
     },
-  ];
+  ]
 
   constructor(
     private router: Router,
@@ -48,17 +48,26 @@ export class HomePage {
   ) {}
 
   connectDevices() {
-    console.log("Función de conexión de dispositivos no implementada aún");
+    console.log("Función de conexión de dispositivos no implementada aún")
   }
 
+  // Asegurar que la navegación al modo música funcione correctamente
   selectShow(showId: string) {
-    console.log("Seleccionado:", showId);
-    this.lightService.setMode(showId);
+    console.log("Seleccionado:", showId)
 
+    // Establecer el modo seleccionado
+    this.lightService.setMode(showId)
+
+    // Redirigir según el modo seleccionado
     if (showId === "music") {
-      console.log("Función disponible en versión futura");
+      // Para el modo música, redirigir a la página de sincronización con música
+      this.router.navigate(["/music-sync"])
+    } else if (showId === "default") {
+      // Para el modo predeterminado, redirigir a la página de modos predeterminados
+      this.router.navigate(["/preset-modes"])
+    } else {
+      // Para otros modos, redirigir al control de luces normal
+      this.router.navigate(["/light-control"])
     }
-
-    this.router.navigateByUrl("/light-control");
   }
 }

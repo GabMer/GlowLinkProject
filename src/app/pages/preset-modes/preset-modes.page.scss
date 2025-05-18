@@ -1,0 +1,265 @@
+.tutorial-content {
+  --background: #121212;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 85, 0, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(0, 170, 255, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 30%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+// Indicador de diapositivas
+.slide-indicator {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  
+  .indicator-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    margin: 0 5px;
+    transition: all 0.3s ease;
+    
+    &.active {
+      background-color: #ff5500;
+      transform: scale(1.2);
+    }
+  }
+}
+
+// Botón para saltar
+.skip-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  
+  ion-button {
+    --color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    text-transform: none;
+    
+    &:hover {
+      --color: #ffffff;
+    }
+  }
+}
+
+// Contenedor de diapositivas
+.slides-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+// Diapositiva individual
+.slide {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-content {
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+// Logo y título
+.logo-container {
+  margin-bottom: 30px;
+  
+  .logo {
+    width: 120px;
+    height: 120px;
+    animation: pulse 2s infinite alternate;
+  }
+}
+
+@keyframes pulse {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(1.05); opacity: 1; }
+}
+
+.slide-title {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.3;
+}
+
+.slide-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+// Preview de color
+.color-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin: 30px 0;
+  box-shadow: 0 0 30px rgba(255, 85, 0, 0.5);
+  transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+// Botones
+.next-button, .start-button {
+  margin-top: 30px;
+  --background: #ff5500;
+  --background-hover: #e04a00;
+  --background-activated: #e04a00;
+  --border-radius: 12px;
+  --color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  height: 50px;
+  --box-shadow: 0 8px 20px rgba(255, 85, 0, 0.3);
+  text-transform: none;
+  width: 100%;
+}
+
+.start-button {
+  --background: #00aaff;
+  --background-hover: #0099e0;
+  --background-activated: #0099e0;
+  --box-shadow: 0 8px 20px rgba(0, 170, 255, 0.3);
+}
+
+// Iconos de características
+.icon-container {
+  margin-bottom: 30px;
+  
+  .feature-icon {
+    font-size: 80px;
+    color: #ff5500;
+  }
+}
+
+// Ilustración de características
+.feature-illustration {
+  width: 100%;
+  margin: 30px 0;
+  
+  .control-preview {
+    display: flex;
+    justify-content: space-around;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    
+    .control-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .option-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      }
+      
+      span {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// Badge de Firebase
+.firebase-badge {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  
+  .firebase-icon {
+    color: #FFCA28;
+    font-size: 20px;
+    margin-right: 8px;
+  }
+  
+  span {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+  }
+}
+
+// Botón de modo sensibilidad
+.sensitivity-button {
+  margin-top: 30px;
+  --border-radius: 12px;
+  font-weight: 500;
+  font-size: 1rem;
+  height: 50px;
+  text-transform: none;
+  width: 100%;
+}
+
+.sensitivity-note {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin-top: 15px;
+  font-style: italic;
+}
+
+// Optimizaciones para móviles
+@media (max-width: 576px) {
+  .slide-title {
+    font-size: 1.5rem;
+  }
+  
+  .slide-description {
+    font-size: 1rem;
+  }
+  
+  .color-preview {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .feature-icon {
+    font-size: 60px !important;
+  }
+  
+  .control-preview {
+    .control-option {
+      .option-icon {
+        width: 40px;
+        height: 40px;
+      }
+      
+      span {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

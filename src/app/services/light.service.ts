@@ -53,10 +53,14 @@ export class LightService {
     selectedPresetId: 1,
   })
 
+  // Modo actual
+  private currentMode = new BehaviorSubject<string | null>(null)
+
   // Observables públicos
   public lights$: Observable<Light[]> = this.lightsSubject.asObservable()
   public presets$: Observable<Preset[]> = this.presetsSubject.asObservable()
   public timerSettings$: Observable<TimerSettings> = this.timerSettingsSubject.asObservable()
+  public currentMode$: Observable<string | null> = this.currentMode.asObservable()
 
   // Temporizador
   private timerInterval: any
@@ -82,6 +86,13 @@ export class LightService {
    */
   public getTimerSettings(): TimerSettings {
     return this.timerSettingsSubject.getValue()
+  }
+
+  /**
+   * Obtiene el modo actual
+   */
+  public getCurrentMode(): string | null {
+    return this.currentMode.getValue()
   }
 
   /**
@@ -324,7 +335,9 @@ export class LightService {
    */
   public setMode(mode: string): void {
     console.log(`Modo de luces establecido a: ${mode}`)
-    // Aquí puedes implementar la lógica específica para cada modo
-    // Por ahora solo registramos el cambio en la consola
+    this.currentMode.next(mode)
+
+    // Detener el temporizador si está activo
+    this.clearTimer()
   }
 }

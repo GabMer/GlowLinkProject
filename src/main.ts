@@ -1,14 +1,13 @@
-import { enableProdMode } from "@angular/core"
-import { bootstrapApplication } from "@angular/platform-browser"
-import { RouteReuseStrategy, provideRouter } from "@angular/router"
-import { provideIonicAngular, IonicRouteStrategy } from "@ionic/angular/standalone"
-
-import { routes } from "./app/app.routes"
-import { AppComponent } from "./app/app.component"
-import { environment } from "./environments/environment"
-
+import { enableProdMode } from "@angular/core";
+import { bootstrapApplication } from "@angular/platform-browser";
+import { RouteReuseStrategy, provideRouter } from "@angular/router";
+import { provideIonicAngular, IonicRouteStrategy } from "@ionic/angular/standalone";
+import { routes } from "./app/app.routes";
+import { AppComponent } from "./app/app.component";
+import { environment } from "./environments/environment";
+import "@angular/compiler"
 if (environment.production) {
-  enableProdMode()
+  enableProdMode();
 }
 
 bootstrapApplication(AppComponent, {
@@ -17,5 +16,4 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes),
   ],
-})
-
+}).catch((err) => console.log(err));

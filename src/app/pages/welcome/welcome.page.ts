@@ -3,13 +3,14 @@ import  { Router } from "@angular/router"
 import { CommonModule } from "@angular/common"
 import { IonicModule } from "@ionic/angular"
 import { AuthService } from "../../services/auth.service"
+import { RouterModule } from "@angular/router"
 
 @Component({
   selector: "app-welcome",
   templateUrl: "./welcome.page.html",
   styleUrls: ["./welcome.page.scss"],
   standalone: true,
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, RouterModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class WelcomePage implements OnInit {

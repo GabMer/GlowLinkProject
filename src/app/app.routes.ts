@@ -7,14 +7,18 @@ export const routes: Routes = [
     loadChildren: () => import("./pages/logo/logo.module").then((m) => m.WelcomePageModule),
   },
   {
+    path: "tutorial",
+    loadComponent: () => import("./pages/tutorial/tutorial.page").then((m) => m.TutorialPage),
+  },
+  {
     path: "home",
-    loadChildren: () => import("./pages/home/home.module").then((m) => m.HomePageModule),
+    loadComponent: () => import("./pages/home/home.page").then((m) => m.HomePage),
     canActivate: [AuthGuard],
   },
   {
     path: "light-control",
     loadComponent: () => import("./pages/light-control/light-control.page").then((m) => m.LightControlPage),
-    canActivate: [AuthGuard], // Proteger esta ruta
+    canActivate: [AuthGuard],
   },
   {
     path: "welcome",
@@ -27,7 +31,17 @@ export const routes: Routes = [
   {
     path: "selected-lights",
     loadComponent: () => import("./pages/selected-lights/selected-lights.page").then((m) => m.SelectedLightsPage),
-    canActivate: [AuthGuard], // Proteger esta ruta
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "music-sync",
+    loadComponent: () => import("./pages/music-sync/music-sync.page").then((m) => m.MusicSyncPage),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "preset-modes",
+    loadComponent: () => import("./pages/preset-modes/preset-modes.page").then((m) => m.PresetModesPage),
+    canActivate: [AuthGuard],
   },
   {
     path: "",

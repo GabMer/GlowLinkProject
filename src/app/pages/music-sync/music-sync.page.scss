@@ -1,0 +1,563 @@
+// Variables
+:root {
+  --glow-primary: #ff5500;
+  --glow-secondary: #00aaff;
+  --glow-accent: #ff00ff;
+  --glow-dark: #1a1a1a;
+  --glow-card-bg: #2a2a2a;
+  --glow-card-active: #333333;
+  --spotify-green: #1DB954;
+}
+
+// Estilos generales
+.glowlink-header {
+  --background: var(--glow-dark);
+  
+  .app-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    background: linear-gradient(90deg, var(--glow-primary), var(--glow-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-right: 8px;
+  }
+  
+  .app-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+}
+
+.music-content {
+  --background: #121212;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 85, 0, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(0, 170, 255, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 30%);
+}
+
+// Tarjeta del reproductor
+.player-card {
+  margin: 16px 0;
+  border-radius: 16px;
+  background-color: var(--glow-card-bg);
+  overflow: hidden;
+  
+  .player-title {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    
+    .music-icon {
+      margin-right: 12px;
+      font-size: 1.5rem;
+      color: var(--glow-primary);
+    }
+  }
+}
+
+// Información de la pista
+.track-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  
+  &.placeholder {
+    justify-content: center;
+    flex-direction: column;
+    padding: 24px;
+    text-align: center;
+    
+    .track-thumbnail {
+      margin-right: 0;
+      margin-bottom: 16px;
+      
+      ion-icon {
+        font-size: 48px;
+        color: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+  
+  .track-thumbnail {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 16px;
+    flex-shrink: 0;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    &.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+  
+  .track-details {
+    flex: 1;
+    
+    h2 {
+      margin: 0 0 4px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
+
+// Visualizador de audio
+.visualizer-container {
+  position: relative;
+  margin: 20px 0;
+  height: 100px;
+  
+  .audio-visualizer {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+  }
+  
+  .beat-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: rgba(255, 85, 0, 0.5);
+    transition: all 0.1s ease;
+    
+    &.active {
+      background-color: var(--glow-primary);
+      box-shadow: 0 0 10px var(--glow-primary);
+      transform: scale(1.2);
+    }
+  }
+}
+
+// Controles de tiempo
+.time-controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  
+  .time-display {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    min-width: 45px;
+  }
+  
+  .time-slider {
+    flex: 1;
+    --bar-background: rgba(255, 255, 255, 0.1);
+    --bar-background-active: var(--glow-primary);
+    --knob-background: #ffffff;
+    --pin-background: var(--glow-primary);
+    margin: 0 8px;
+  }
+}
+
+// Controles de reproducción
+.playback-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  
+  ion-button {
+    --color: rgba(255, 255, 255, 0.7);
+    
+    &:hover {
+      --color: #ffffff;
+    }
+    
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+  
+  .play-button {
+    --color: var(--glow-primary);
+    
+    ion-icon {
+      font-size: 36px;
+    }
+  }
+}
+
+// Control de volumen
+.volume-control {
+  display: flex;
+  align-items: center;
+  
+  ion-icon {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 20px;
+  }
+  
+  .volume-slider {
+    flex: 1;
+    --bar-background: rgba(255, 255, 255, 0.1);
+    --bar-background-active: rgba(255, 255, 255, 0.3);
+    --knob-background: #ffffff;
+    --pin-background: var(--glow-primary);
+    margin: 0 8px;
+  }
+}
+
+// Tarjeta de sincronización
+.sync-card {
+  margin: 16px 0;
+  border-radius: 16px;
+  background-color: var(--glow-card-bg);
+  overflow: hidden;
+  
+  ion-card-title {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    
+    .sync-icon {
+      margin-right: 12px;
+      font-size: 1.5rem;
+      color: var(--glow-accent);
+    }
+  }
+  
+  ion-item {
+    --background: transparent;
+    --background-hover: rgba(255, 255, 255, 0.05);
+    --color: #ffffff;
+    
+    ion-label {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    ion-select {
+      --placeholder-color: rgba(255, 255, 255, 0.5);
+      --placeholder-opacity: 1;
+    }
+    
+    ion-toggle {
+      --background: rgba(255, 255, 255, 0.1);
+      --background-checked: rgba(255, 85, 0, 0.5);
+      --handle-background: #ffffff;
+      --handle-background-checked: var(--glow-primary);
+    }
+  }
+  
+  .sensitivity-slider {
+    --bar-background: rgba(255, 255, 255, 0.1);
+    --bar-background-active: var(--glow-accent);
+    --knob-background: #ffffff;
+    --pin-background: var(--glow-accent);
+  }
+}
+
+// Vista previa de preset
+.preset-preview {
+  margin-top: 16px;
+  
+  .preset-colors {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    .preset-colors-container {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.2);
+      opacity: 0.5;
+      transition: all 0.3s ease;
+      
+      &.active {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.4);
+        box-shadow: 0 0 10px rgba(255, 85, 0, 0.3);
+      }
+      
+      .preset-color {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        
+        &.current {
+          transform: scale(1.2);
+          border-color: #ffffff;
+          box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+      }
+    }
+  }
+}
+
+// Tarjeta de selección de música
+.music-selection-card {
+  margin: 16px 0;
+  border-radius: 16px;
+  background-color: var(--glow-card-bg);
+  overflow: hidden;
+  
+  ion-segment {
+    --background: transparent;
+    
+    ion-segment-button {
+      --color: rgba(255, 255, 255, 0.5);
+      --color-checked: #ffffff;
+      --indicator-color: var(--glow-primary);
+      
+      &[value="spotify"] {
+        --indicator-color: var(--spotify-green);
+        --color-checked: var(--spotify-green);
+      }
+    }
+  }
+}
+
+// Barra de búsqueda
+.search-container {
+  margin-bottom: 16px;
+  
+  ion-searchbar {
+    --background: rgba(0, 0, 0, 0.2);
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.5);
+    --icon-color: rgba(255, 255, 255, 0.5);
+    --clear-button-color: rgba(255, 255, 255, 0.5);
+    --border-radius: 8px;
+  }
+}
+
+// Lista de pistas
+.tracks-container {
+  max-height: 300px;
+  overflow-y: auto;
+  
+  ion-list {
+    background: transparent;
+  }
+  
+  ion-item {
+    --background: transparent;
+    --background-hover: rgba(255, 255, 255, 0.05);
+    --color: #ffffff;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    
+    &.active-track {
+      --background: rgba(255, 85, 0, 0.2);
+      --background-hover: rgba(255, 85, 0, 0.3);
+      border-left: 3px solid var(--glow-primary);
+    }
+    
+    ion-thumbnail {
+      --border-radius: 4px;
+      width: 60px;
+      height: 60px;
+    }
+    
+    ion-label {
+      h2 {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #ffffff;
+      }
+      
+      p {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+    
+    ion-icon {
+      color: var(--glow-primary);
+      font-size: 24px;
+    }
+  }
+  
+  .empty-list {
+    padding: 30px 0;
+    
+    ion-label {
+      ion-icon {
+        font-size: 48px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 16px;
+      }
+      
+      p {
+        color: rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
+}
+
+// Estado de Spotify
+.spotify-status {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  
+  ion-chip {
+    --background: rgba(29, 185, 84, 0.2);
+  }
+}
+
+// Indicador de carga
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0;
+  
+  ion-spinner {
+    color: var(--glow-primary);
+    width: 40px;
+    height: 40px;
+    margin-bottom: 16px;
+  }
+  
+  p {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+// Modal de Spotify
+.spotify-login-content {
+  --background: #121212;
+  
+  .spotify-logo {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    
+    ion-icon {
+      font-size: 80px;
+      color: var(--spotify-green);
+    }
+  }
+  
+  h2 {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 16px;
+  }
+  
+  p {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
+  }
+  
+  .disclaimer {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 30px;
+  }
+}
+
+// Modal de guardar patrón
+.preset-colors-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  min-height: 60px;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.preset-color-preview {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+// Footer
+.footer-toolbar {
+  --min-height: 48px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+}
+
+.footer-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  
+  ion-button {
+    --color: rgba(255, 255, 255, 0.7);
+  }
+  
+  ion-chip {
+    margin: 0;
+  }
+}
+
+// Optimizaciones para móviles
+@media (max-width: 576px) {
+  .track-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    .track-thumbnail {
+      margin-right: 0;
+      margin-bottom: 16px;
+    }
+  }
+  
+  .playback-controls {
+    ion-button {
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+    
+    .play-button {
+      ion-icon {
+        font-size: 30px;
+      }
+    }
+  }
+  
+  .preset-color {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .footer-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,131 @@
+<ion-content fullscreen class="tutorial-content">
+  <!-- Indicador de diapositivas -->
+  <div class="slide-indicator">
+    <div 
+      *ngFor="let _ of [0, 1, 2]; let i = index" 
+      class="indicator-dot" 
+      [class.active]="currentSlide === i"
+    ></div>
+  </div>
+  
+  <!-- Botón para saltar tutorial -->
+  <div class="skip-button">
+    <ion-button fill="clear" size="small" (click)="skipToWelcome()">
+      Saltar
+    </ion-button>
+  </div>
+  
+  <!-- Contenedor de diapositivas -->
+  <div class="slides-container">
+    <!-- Diapositiva 1: Bienvenida -->
+    <div class="slide" *ngIf="currentSlide === 0">
+      <div class="slide-content">
+        <div class="logo-container">
+          <img src="assets/images/logo.svg" alt="Logo" class="logo">
+        </div>
+        
+        <h1 class="slide-title">¡Bienvenido a nuestro Show de Luces Inteligente!</h1>
+        
+        <p class="slide-description">
+          Disfruta una experiencia visual vibrante diseñada para personalizar tus ambientes a través de colores vivos y transiciones dinámicas.
+        </p>
+        
+        <p class="slide-description">
+          Solo necesitas una conexión a internet para comenzar.
+        </p>
+        
+        <div class="color-preview" [style.background-color]="'hsl(' + colorPreviewHue + ', 100%, 50%)'"></div>
+        
+        <ion-button expand="block" class="next-button" (click)="nextSlide()">
+          Siguiente
+          <ion-icon name="arrow-forward" slot="end"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+    
+    <!-- Diapositiva 2: Cómo funciona -->
+    <div class="slide" *ngIf="currentSlide === 1">
+      <div class="slide-content">
+        <div class="icon-container">
+          <ion-icon name="settings-outline" class="feature-icon"></ion-icon>
+        </div>
+        
+        <h1 class="slide-title">Configura tu experiencia de luz</h1>
+        
+        <p class="slide-description">
+          Selecciona entre opciones predeterminadas o personalizadas para controlar cómo se muestran los colores.
+        </p>
+        
+        <p class="slide-description">
+          Todo se sincroniza automáticamente a través de Firebase.
+        </p>
+        
+        <div class="feature-illustration">
+          <div class="control-preview">
+            <div class="control-option">
+              <div class="option-icon" style="background-color: #ff5500;"></div>
+              <span>Predeterminado</span>
+            </div>
+            <div class="control-option">
+              <div class="option-icon" style="background-color: #00aaff;"></div>
+              <span>Personalizado</span>
+            </div>
+            <div class="control-option">
+              <div class="option-icon" style="background-color: #ff00ff;"></div>
+              <span>Música</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="firebase-badge">
+          <ion-icon name="logo-firebase" class="firebase-icon"></ion-icon>
+          <span>Powered by Firebase</span>
+        </div>
+        
+        <ion-button expand="block" class="next-button" (click)="nextSlide()">
+          Siguiente
+          <ion-icon name="arrow-forward" slot="end"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+    
+    <!-- Diapositiva 3: Modo de sensibilidad -->
+    <div class="slide" *ngIf="currentSlide === 2">
+      <div class="slide-content">
+        <div class="icon-container">
+          <ion-icon name="accessibility-outline" class="feature-icon"></ion-icon>
+        </div>
+        
+        <h1 class="slide-title">Pensando en todos</h1>
+        
+        <p class="slide-description">
+          Sabemos que algunos usuarios pueden ser sensibles a luces brillantes o cambios rápidos de color.
+        </p>
+        
+        <p class="slide-description">
+          Por eso, hemos incluido un modo especial de visualización para personas con autismo o sensibilidad visual, el cual usa transiciones suaves y colores tenues.
+        </p>
+        
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          class="sensitivity-button" 
+          [color]="sensitivityModeEnabled ? 'success' : 'medium'"
+          (click)="toggleSensitivityMode()"
+        >
+          <ion-icon [name]="sensitivityModeEnabled ? 'checkmark-circle-outline' : 'accessibility-outline'" slot="start"></ion-icon>
+          {{ sensitivityModeEnabled ? 'Modo sensibilidad activado' : 'Activar modo sensibilidad' }}
+        </ion-button>
+        
+        <p class="sensitivity-note">
+          Puedes cambiar esta configuración más tarde en la sección de ajustes.
+        </p>
+        
+        <ion-button expand="block" class="start-button" (click)="finishTutorial()">
+          <ion-icon name="sparkles-outline" slot="start"></ion-icon>
+          Comenzar
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>
