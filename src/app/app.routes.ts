@@ -44,8 +44,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: "room/:id",
+    loadComponent: () => import("./pages/room/room.page").then((m) => m.RoomPage),
+    canActivate: [AuthGuard],
+  },
+  {
     path: "",
-    redirectTo: "logo",
+    redirectTo: "tutorial",
     pathMatch: "full",
   },
 ]

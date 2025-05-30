@@ -1,0 +1,122 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>Configuración de Visión</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="modal-content">
+    <div class="intro-section">
+      <ion-icon name="eye-outline" class="intro-icon"></ion-icon>
+      <h2>¿Tienes algún tipo de daltonismo?</h2>
+      <p>Podemos adaptar los colores de la aplicación para mejorar tu experiencia visual.</p>
+    </div>
+
+    <div class="options-section">
+      <ion-card 
+        class="vision-option" 
+        [class.selected]="colorblindType === 'normal'"
+        (click)="selectNormalVision()"
+      >
+        <ion-card-content>
+          <div class="option-header">
+            <ion-icon name="checkmark-circle-outline" class="option-icon"></ion-icon>
+            <h3>Visión Normal</h3>
+          </div>
+          <p>No tengo daltonismo</p>
+          <div class="color-preview normal">
+            <div class="color-dot" style="background-color: #FF0000;"></div>
+            <div class="color-dot" style="background-color: #00FF00;"></div>
+            <div class="color-dot" style="background-color: #0000FF;"></div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card 
+        class="vision-option" 
+        [class.selected]="colorblindType === 'protanopia'"
+        (click)="selectColorblindType('protanopia')"
+      >
+        <ion-card-content>
+          <div class="option-header">
+            <ion-icon name="eye-off-outline" class="option-icon"></ion-icon>
+            <h3>Protanopia</h3>
+          </div>
+          <p>Dificultad para ver el rojo</p>
+          <div class="color-preview protanopia">
+            <div class="color-dot" style="background-color: #8B4513;"></div>
+            <div class="color-dot" style="background-color: #00FF00;"></div>
+            <div class="color-dot" style="background-color: #0000FF;"></div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card 
+        class="vision-option" 
+        [class.selected]="colorblindType === 'deuteranopia'"
+        (click)="selectColorblindType('deuteranopia')"
+      >
+        <ion-card-content>
+          <div class="option-header">
+            <ion-icon name="eye-off-outline" class="option-icon"></ion-icon>
+            <h3>Deuteranopia</h3>
+          </div>
+          <p>Dificultad para ver el verde</p>
+          <div class="color-preview deuteranopia">
+            <div class="color-dot" style="background-color: #FF0000;"></div>
+            <div class="color-dot" style="background-color: #DAA520;"></div>
+            <div class="color-dot" style="background-color: #0000FF;"></div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card 
+        class="vision-option" 
+        [class.selected]="colorblindType === 'tritanopia'"
+        (click)="selectColorblindType('tritanopia')"
+      >
+        <ion-card-content>
+          <div class="option-header">
+            <ion-icon name="eye-off-outline" class="option-icon"></ion-icon>
+            <h3>Tritanopia</h3>
+          </div>
+          <p>Dificultad para ver el azul</p>
+          <div class="color-preview tritanopia">
+            <div class="color-dot" style="background-color: #FF0000;"></div>
+            <div class="color-dot" style="background-color: #00FF00;"></div>
+            <div class="color-dot" style="background-color: #800080;"></div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="intensity-section" *ngIf="colorblindType !== 'normal'">
+      <ion-item>
+        <ion-label>Intensidad de la corrección</ion-label>
+        <ion-range
+          [(ngModel)]="intensity"
+          min="0"
+          max="100"
+          step="10"
+          (ionChange)="onIntensityChange()"
+          color="primary"
+        >
+          <ion-icon slot="start" name="remove-outline"></ion-icon>
+          <ion-icon slot="end" name="add-outline"></ion-icon>
+        </ion-range>
+      </ion-item>
+    </div>
+
+    <div class="note-section">
+      <ion-note>
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Puedes cambiar esta configuración más tarde en los ajustes de la aplicación.
+      </ion-note>
+    </div>
+  </div>
+</ion-content>

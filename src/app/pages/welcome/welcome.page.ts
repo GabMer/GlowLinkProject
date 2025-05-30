@@ -1,9 +1,10 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
 import  { Router } from "@angular/router"
 import { CommonModule } from "@angular/common"
-import { IonicModule } from "@ionic/angular"
+import { IonicModule, ModalController } from "@ionic/angular"
 import { AuthService } from "../../services/auth.service"
 import { RouterModule } from "@angular/router"
+import { ColorblindModalComponent } from "../../components/colorblind-modal.component"
 
 @Component({
   selector: "app-welcome",
@@ -17,6 +18,7 @@ export class WelcomePage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private modalController: ModalController
   ) {}
 
   ngOnInit() {
@@ -27,6 +29,30 @@ export class WelcomePage implements OnInit {
         this.router.navigate(["/home"])
       }
     })
+
+    // Mostrar modal de daltonismo si es la primera vez
+    this.checkFirstTime()
+  }
+
+  private async checkFirstTime() {
+    const hasSeenColorblindModal = localStorage.getItem('hasSeenColorblindModal')
+    if (!hasSeenColorblindModal) {
+      setTimeout(async () => {
+        await this.showColorblindModal()
+      }, 1000) // Mostrar después de 1 segundo
+    }
+  }
+
+  private async showColorblindModal() {
+    const modal = await this.modalController.create({
+      component: ColorblindModalComponent,
+      backdropDismiss: false
+    })
+
+    await modal.present()
+
+    const { data } = await modal.onDidDismiss()
+    localStorage.setItem('hasSeenColorblindModal', 'true')
   }
 
   handleLogin() {

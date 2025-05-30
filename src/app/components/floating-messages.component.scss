@@ -1,0 +1,149 @@
+.floating-messages-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.floating-message {
+  position: absolute;
+  padding: 15px 25px;
+  border-radius: 30px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  animation: floatMessage 3.5s ease-in-out forwards;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  
+  .message-text {
+    display: block;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+  }
+}
+
+@keyframes floatMessage {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh) scale(0.6) rotate(-5deg);
+    left: calc(50% - 150px);
+  }
+  
+  15% {
+    opacity: 1;
+    transform: translateY(75vh) scale(1.1) rotate(2deg);
+  }
+  
+  50% {
+    opacity: 1;
+    transform: translateY(35vh) scale(1) rotate(-1deg);
+    left: calc(20% + 40%);
+  }
+  
+  85% {
+    opacity: 1;
+    transform: translateY(15vh) scale(0.9) rotate(1deg);
+  }
+  
+  100% {
+    opacity: 0;
+    transform: translateY(-15vh) scale(0.6) rotate(-3deg);
+    left: calc(10% + 70%);
+  }
+}
+
+// Variaciones de animación para diferentes mensajes
+.floating-message:nth-child(2n) {
+  animation: floatMessageLeft 3.5s ease-in-out forwards;
+}
+
+.floating-message:nth-child(3n) {
+  animation: floatMessageRight 3.5s ease-in-out forwards;
+}
+
+.floating-message:nth-child(4n) {
+  animation: floatMessageBounce 3.5s ease-in-out forwards;
+}
+
+@keyframes floatMessageLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-120vw) translateY(80vh) scale(0.7) rotate(10deg);
+  }
+  
+  25% {
+    opacity: 1;
+    transform: translateX(15vw) translateY(55vh) scale(1.1) rotate(-5deg);
+  }
+  
+  75% {
+    opacity: 1;
+    transform: translateX(75vw) translateY(25vh) scale(0.95) rotate(3deg);
+  }
+  
+  100% {
+    opacity: 0;
+    transform: translateX(130vw) translateY(5vh) scale(0.6) rotate(-8deg);
+  }
+}
+
+@keyframes floatMessageRight {
+  0% {
+    opacity: 0;
+    transform: translateX(120vw) translateY(70vh) scale(0.7) rotate(-10deg);
+  }
+  
+  25% {
+    opacity: 1;
+    transform: translateX(75vw) translateY(45vh) scale(1.1) rotate(5deg);
+  }
+  
+  75% {
+    opacity: 1;
+    transform: translateX(15vw) translateY(20vh) scale(0.95) rotate(-3deg);
+  }
+  
+  100% {
+    opacity: 0;
+    transform: translateX(-30vw) translateY(0vh) scale(0.6) rotate(8deg);
+  }
+}
+
+@keyframes floatMessageBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh) scale(0.5);
+    left: calc(50% - 100px);
+  }
+  
+  20% {
+    opacity: 1;
+    transform: translateY(60vh) scale(1.2);
+  }
+  
+  40% {
+    transform: translateY(70vh) scale(0.9);
+  }
+  
+  60% {
+    transform: translateY(30vh) scale(1.1);
+    left: calc(30% + 20%);
+  }
+  
+  80% {
+    transform: translateY(40vh) scale(0.95);
+  }
+  
+  100% {
+    opacity: 0;
+    transform: translateY(-20vh) scale(0.5);
+    left: calc(60% + 20%);
+  }
+}

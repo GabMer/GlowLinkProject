@@ -220,11 +220,14 @@ export class LightControlPage implements OnInit, OnDestroy {
   /**
    * Cierra la sesión del usuario
    */
-  logout() {
-    this.authService.logout().subscribe(() => {
-      this.router.navigate(["/welcome"])
-    })
+ async logout() {
+  try {
+    await this.authService.logout().toPromise()
+    this.router.navigate(['/welcome'])
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error)
   }
+}
 
   /**
    * Navega a la página de inicio

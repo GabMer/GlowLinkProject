@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>{{ room?.name || 'Sala' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="shareRoom()">
+        <ion-icon name="share-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="toggleQRCode()">
+        <ion-icon name="qr-code-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="leaveRoom()">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="room-content">
+  <!-- Componente de mensajes flotantes -->
+  <app-floating-messages></app-floating-messages>
+
+  <div class="room-info" *ngIf="room">
+    <ion-card class="info-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="people-outline"></ion-icon>
+          {{ room.name }}
+        </ion-card-title>
+        <ion-card-subtitle>
+          {{ room.participants.length }} participante(s) conectado(s)
+        </ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <div class="room-code">
+          <span>Código de sala: <strong>{{ room.id }}</strong></span>
+          <ion-button fill="clear" size="small" (click)="copyRoomCode()">
+            <ion-icon name="copy-outline"></ion-icon>
+          </ion-button>
+        </div>
+        
+        <div class="host-info" *ngIf="isHost">
+          <ion-chip color="success">
+            <ion-icon name="checkmark-outline"></ion-icon>
+            <ion-label>Eres el anfitrión</ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Código QR -->
+    <ion-card *ngIf="showQRCode" class="qr-card">
+      <ion-card-header>
+        <ion-card-title>Código QR para unirse</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="qr-container">
+          <div class="qr-placeholder">
+            <ion-icon name="qr-code-outline"></ion-icon>
+            <p>{{ qrCodeData }}</p>
+          </div>
+          <p>Comparte este enlace para unirse a la sala</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Controles del anfitrión -->
+    <ion-card *ngIf="isHost" class="host-controls">
+      <ion-card-header>
+        <ion-card-title>Controles del anfitrión</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="block" routerLink="/light-control" color="primary">
+          <ion-icon name="bulb-outline" slot="start"></ion-icon>
+          Controlar luces
+        </ion-button>
+        
+        <ion-button expand="block" routerLink="/music-sync" color="secondary">
+          <ion-icon name="musical-note-outline" slot="start"></ion-icon>
+          Sincronizar con música
+        </ion-button>
+        
+        <ion-button expand="block" (click)="deleteRoom()" color="danger">
+          <ion-icon name="trash-outline" slot="start"></ion-icon>
+          Eliminar sala
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Mensajes de la sala -->
+    <ion-card class="messages-card">
+      <ion-card-header>
+        <ion-card-title>Actividad de la sala</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="messages-list">
+          <div 
+            *ngFor="let message of room.messages" 
+            class="message-item"
+            [class.system-message]="message.type === 'system'"
+          >
+            <span class="message-text">{{ message.text }}</span>
+            <span class="message-time">{{ message.timestamp | date:'short' }}</span>
+          </div>
+          
+          <div *ngIf="room.messages.length === 0" class="no-messages">
+            <ion-text color="medium">No hay actividad reciente</ion-text>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

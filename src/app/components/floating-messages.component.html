@@ -1,0 +1,9 @@
+<div class="floating-messages-container">
+  <div 
+    *ngFor="let message of messages; trackBy: trackByMessageId"
+    class="floating-message"
+    [style]="getMessageStyle(message)"
+  >
+    <span class="message-text">{{ message.text }}</span>
+  </div>
+</div>
