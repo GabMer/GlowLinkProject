@@ -12,6 +12,12 @@ import { IonApp, IonRouterOutlet } from "@ionic/angular/standalone"
   imports: [CommonModule, RouterLink, RouterLinkActive, IonApp, IonRouterOutlet, RouterOutlet],
 })
 export class AppComponent {
-  constructor() {}
+  constructor() { }
+  ngOnInit() {
+    const sensitivityMode = localStorage.getItem("sensitivityMode");
+    if (sensitivityMode === "true") {
+      document.body.classList.add("sensitivity-mode");
+    }
+  }
 }
 

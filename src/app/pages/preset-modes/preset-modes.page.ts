@@ -125,7 +125,7 @@ export class PresetModesPage implements OnInit, OnDestroy {
             id: "amanecer",
             nombre: "Amanecer",
             descripcion: "Simula una salida del sol con tonos suaves",
-            icono: "sunrise-outline",
+            icono: "sunny-outline",
             colores: ["#8B0000", "#FF4500", "#FFA500", "#FFD700"],
             velocidad: "muy-lento",
             intervalo: 5000,

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { BehaviorSubject, Observable } from "rxjs"
+import { BehaviorSubject, type Observable } from "rxjs"
 
 @Injectable({
   providedIn: "root",
@@ -19,7 +19,7 @@ export class SettingsService {
   private loadSensitivityMode(): void {
     const sensitivityMode = localStorage.getItem("sensitivityMode")
     if (sensitivityMode === "true") {
-      this.sensitivityModeSubject.next(true)
+      this.setSensitivityMode(true)
     }
   }
 
@@ -37,6 +37,13 @@ export class SettingsService {
   public setSensitivityMode(enabled: boolean): void {
     this.sensitivityModeSubject.next(enabled)
     localStorage.setItem("sensitivityMode", enabled.toString())
+
+    // Aplicar o quitar la clase CSS del body
+    if (enabled) {
+      document.body.classList.add("sensitivity-mode")
+    } else {
+      document.body.classList.remove("sensitivity-mode")
+    }
   }
 
   /**

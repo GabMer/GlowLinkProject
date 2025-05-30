@@ -40,6 +40,8 @@ export class TutorialPage implements OnInit {
 
   ngOnInit() {
     // Comprobar si el usuario ya ha visto el tutorial
+    localStorage.removeItem("tutorialSeen");  //pa probaaaar
+
     const tutorialSeen = localStorage.getItem("tutorialSeen")
     if (tutorialSeen === "true") {
       this.skipToWelcome()
@@ -50,6 +52,7 @@ export class TutorialPage implements OnInit {
     const sensitivityMode = localStorage.getItem("sensitivityMode")
     if (sensitivityMode === "true") {
       this.sensitivityModeEnabled = true
+      document.body.classList.add("sensitivity-mode")
     }
 
     // Iniciar la animación de cambio de color
@@ -114,11 +117,15 @@ export class TutorialPage implements OnInit {
    * Activa o desactiva el modo de sensibilidad
    */
   toggleSensitivityMode() {
-    this.sensitivityModeEnabled = !this.sensitivityModeEnabled
-    localStorage.setItem("sensitivityMode", this.sensitivityModeEnabled.toString())
+    this.sensitivityModeEnabled = !this.sensitivityModeEnabled;
 
-    // Actualizar la animación de color según el modo
-    this.startColorAnimation()
+    if (this.sensitivityModeEnabled) {
+      document.body.classList.add('sensitivity-mode');
+      localStorage.setItem('sensitivityMode', 'true');
+    } else {
+      document.body.classList.remove('sensitivity-mode');
+      localStorage.setItem('sensitivityMode', 'false');
+    }
   }
 
   /**
@@ -133,6 +140,7 @@ export class TutorialPage implements OnInit {
 
     // Navegar a la pantalla de bienvenida
     this.skipToWelcome()
+
   }
 
   /**

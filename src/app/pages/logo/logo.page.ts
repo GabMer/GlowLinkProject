@@ -25,7 +25,7 @@ export class WelcomePage implements OnInit {
 
     // Redireccionar después de 5 segundos
     setTimeout(() => {
-      this.router.navigateByUrl("/welcome")
+      this.router.navigateByUrl("/tutorial")
     }, 5000)
   }
 }

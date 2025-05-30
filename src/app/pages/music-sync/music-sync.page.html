@@ -9,8 +9,8 @@
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="toggleSync()">
-        <ion-icon [name]="syncEnabled ? 'musical-note' : 'musical-note-outline'" 
-                 [color]="syncEnabled ? 'success' : 'medium'"></ion-icon>
+        <ion-icon [name]="syncEnabled ? 'musical-note' : 'musical-note-outline'"
+          [color]="syncEnabled ? 'success' : 'medium'"></ion-icon>
       </ion-button>
       <ion-button (click)="showSavePatternModal = true">
         <ion-icon name="save-outline"></ion-icon>
@@ -25,7 +25,7 @@
 <ion-content fullscreen class="ion-padding music-content">
   <!-- Reproductor de audio oculto -->
   <audio #audioPlayer (timeupdate)="updateTime()" (ended)="stopPlayback()"></audio>
-  
+
   <ion-grid>
     <!-- Sección del reproductor -->
     <ion-row>
@@ -37,7 +37,7 @@
               Reproductor de Música
             </ion-card-title>
           </ion-card-header>
-          
+
           <ion-card-content>
             <!-- Información de la pista actual -->
             <div class="track-info" *ngIf="currentTrack">
@@ -49,7 +49,7 @@
                 <p>{{currentTrack.artist}}</p>
               </div>
             </div>
-            
+
             <div class="track-info placeholder" *ngIf="!currentTrack">
               <div class="track-thumbnail placeholder">
                 <ion-icon name="musical-note-outline"></ion-icon>
@@ -59,58 +59,48 @@
                 <p>Elige una pista para reproducir</p>
               </div>
             </div>
-            
+
             <!-- Visualizador de audio -->
             <div class="visualizer-container">
               <canvas #audioVisualizer width="600" height="100" class="audio-visualizer"></canvas>
               <div class="beat-indicator" [class.active]="beatDetected"></div>
             </div>
-            
+
             <!-- Controles de tiempo -->
             <div class="time-controls">
               <span class="time-display">{{formatTime(currentTime)}}</span>
-              <ion-range 
-                min="0" 
-                [max]="duration || 100" 
-                [value]="currentTime"
-                (ionChange)="seekTo($event)"
-                class="time-slider"
-              ></ion-range>
+              <ion-range min="0" [max]="duration || 100" [value]="currentTime" (ionChange)="seekTo($event)"
+                class="time-slider"></ion-range>
               <span class="time-display">{{formatTime(duration)}}</span>
             </div>
-            
+
             <!-- Controles de reproducción -->
             <div class="playback-controls">
               <ion-button fill="clear" size="large" (click)="stopPlayback()">
                 <ion-icon name="stop-outline"></ion-icon>
               </ion-button>
-              
+
               <ion-button fill="clear" size="large" class="play-button" (click)="playPause()">
                 <ion-icon [name]="isPlaying ? 'pause-outline' : 'play-outline'"></ion-icon>
               </ion-button>
-              
+
               <ion-button fill="clear" size="large" (click)="toggleMute()">
                 <ion-icon [name]="isMuted ? 'volume-mute-outline' : 'volume-high-outline'"></ion-icon>
               </ion-button>
             </div>
-            
+
             <!-- Control de volumen -->
             <div class="volume-control">
               <ion-icon name="volume-mute-outline"></ion-icon>
-              <ion-range 
-                min="0" 
-                max="100" 
-                [(ngModel)]="volume"
-                (ionChange)="updateVolume()"
-                class="volume-slider"
-              ></ion-range>
+              <ion-range min="0" max="100" [(ngModel)]="volume" (ionChange)="updateVolume()"
+                class="volume-slider"></ion-range>
               <ion-icon name="volume-high-outline"></ion-icon>
             </div>
           </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
-    
+
     <!-- Sección de configuración de sincronización -->
     <ion-row>
       <ion-col size="12">
@@ -121,59 +111,43 @@
               Configuración de Sincronización
             </ion-card-title>
           </ion-card-header>
-          
+
           <ion-card-content>
             <!-- Selector de preset -->
             <ion-item lines="none" class="preset-selector">
               <ion-label>Patrón de luces</ion-label>
-              <ion-select 
-                [(ngModel)]="selectedPresetId" 
-                (ionChange)="selectPreset(selectedPresetId!)"
-                placeholder="Selecciona un patrón"
-                [disabled]="!syncEnabled"
-              >
+              <ion-select [(ngModel)]="selectedPresetId" (ionChange)="selectPreset(selectedPresetId!)"
+                placeholder="Selecciona un patrón" [disabled]="!syncEnabled">
                 <ion-select-option *ngFor="let preset of presets" [value]="preset.id">
                   {{preset.name}}
                 </ion-select-option>
               </ion-select>
             </ion-item>
-            
+
             <!-- Activar/desactivar sincronización -->
             <ion-item lines="none">
               <ion-label>Sincronización con música</ion-label>
               <ion-toggle [(ngModel)]="syncEnabled" (ionChange)="toggleSync()"></ion-toggle>
             </ion-item>
-            
+
             <!-- Sensibilidad de la sincronización -->
             <ion-item lines="none">
               <ion-label>Sensibilidad</ion-label>
-              <ion-range 
-                min="10" 
-                max="100" 
-                [(ngModel)]="syncSensitivity"
-                (ionChange)="adjustSensitivity()"
-                [disabled]="!syncEnabled"
-                class="sensitivity-slider"
-              >
-                <ion-icon slot="start" name="remove-outline"></ion-icon>
+              <ion-range min="10" max="100" [(ngModel)]="syncSensitivity" (ionChange)="adjustSensitivity()"
+                [disabled]="!syncEnabled" class="sensitivity-slider">
+                <ion-icon slot="start" name="close-outline"></ion-icon>
                 <ion-icon slot="end" name="add-outline"></ion-icon>
               </ion-range>
             </ion-item>
-            
+
             <!-- Vista previa de los colores del preset -->
             <div class="preset-preview" *ngIf="selectedPresetId">
               <div class="preset-colors">
-                <div 
-                  *ngFor="let preset of presets"
-                  class="preset-colors-container" 
-                  [class.active]="preset.id === selectedPresetId"
-                >
-                  <div 
-                    *ngFor="let color of preset.colors"
-                    class="preset-color" 
-                    [style.background-color]="color"
-                    [class.current]="preset.id === selectedPresetId && preset.colors.indexOf(color) === currentColorIndex"
-                  ></div>
+                <div *ngFor="let preset of presets" class="preset-colors-container"
+                  [class.active]="preset.id === selectedPresetId">
+                  <div *ngFor="let color of preset.colors" class="preset-color" [style.background-color]="color"
+                    [class.current]="preset.id === selectedPresetId && preset.colors.indexOf(color) === currentColorIndex">
+                  </div>
                 </div>
               </div>
             </div>
@@ -181,7 +155,7 @@
         </ion-card>
       </ion-col>
     </ion-row>
-    
+
     <!-- Sección de selección de música -->
     <ion-row>
       <ion-col size="12">
@@ -197,32 +171,24 @@
                 <ion-label>Internet</ion-label>
               </ion-segment-button>
               <ion-segment-button value="spotify">
-                <ion-icon name="logo-spotify"></ion-icon>
+                <img src="assets/icons/spotify.svg" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
                 <ion-label>Spotify</ion-label>
               </ion-segment-button>
             </ion-segment>
           </ion-card-header>
-          
+
           <ion-card-content>
             <!-- Barra de búsqueda -->
             <div class="search-container">
-              <ion-searchbar 
-                [(ngModel)]="searchQuery" 
-                placeholder="Buscar música..." 
-                (ionInput)="searchMusic()"
-                [debounce]="1000"
-              ></ion-searchbar>
+              <ion-searchbar [(ngModel)]="searchQuery" placeholder="Buscar música..." (ionInput)="searchMusic()"
+                [debounce]="1000"></ion-searchbar>
             </div>
-            
+
             <!-- Lista de pistas del dispositivo -->
             <div class="tracks-container" *ngIf="activeTab === 'device'">
               <ion-list lines="none">
-                <ion-item 
-                  *ngFor="let track of deviceTracks" 
-                  button 
-                  (click)="selectTrack(track)"
-                  [class.active-track]="currentTrack?.id === track.id"
-                >
+                <ion-item *ngFor="let track of deviceTracks" button (click)="selectTrack(track)"
+                  [class.active-track]="currentTrack?.id === track.id">
                   <ion-thumbnail slot="start">
                     <img [src]="track.thumbnail" alt="Portada">
                   </ion-thumbnail>
@@ -230,12 +196,10 @@
                     <h2>{{track.title}}</h2>
                     <p>{{track.artist}} • {{formatTime(track.duration)}}</p>
                   </ion-label>
-                  <ion-icon 
-                    slot="end" 
-                    [name]="currentTrack?.id === track.id && isPlaying ? 'pause-outline' : 'play-outline'"
-                  ></ion-icon>
+                  <ion-icon slot="end"
+                    [name]="currentTrack?.id === track.id && isPlaying ? 'pause-outline' : 'play-outline'"></ion-icon>
                 </ion-item>
-                
+
                 <ion-item *ngIf="deviceTracks.length === 0" lines="none" class="empty-list">
                   <ion-label class="ion-text-center">
                     <ion-icon name="folder-open-outline" size="large"></ion-icon>
@@ -244,16 +208,12 @@
                 </ion-item>
               </ion-list>
             </div>
-            
+
             <!-- Lista de pistas de internet -->
             <div class="tracks-container" *ngIf="activeTab === 'internet'">
               <ion-list lines="none">
-                <ion-item 
-                  *ngFor="let track of internetTracks" 
-                  button 
-                  (click)="selectTrack(track)"
-                  [class.active-track]="currentTrack?.id === track.id"
-                >
+                <ion-item *ngFor="let track of internetTracks" button (click)="selectTrack(track)"
+                  [class.active-track]="currentTrack?.id === track.id">
                   <ion-thumbnail slot="start">
                     <img [src]="track.thumbnail" alt="Portada">
                   </ion-thumbnail>
@@ -261,12 +221,10 @@
                     <h2>{{track.title}}</h2>
                     <p>{{track.artist}} • {{formatTime(track.duration)}}</p>
                   </ion-label>
-                  <ion-icon 
-                    slot="end" 
-                    [name]="currentTrack?.id === track.id && isPlaying ? 'pause-outline' : 'play-outline'"
-                  ></ion-icon>
+                  <ion-icon slot="end"
+                    [name]="currentTrack?.id === track.id && isPlaying ? 'pause-outline' : 'play-outline'"></ion-icon>
                 </ion-item>
-                
+
                 <ion-item *ngIf="internetTracks.length === 0" lines="none" class="empty-list">
                   <ion-label class="ion-text-center">
                     <ion-icon name="cloud-download-outline" size="large"></ion-icon>
@@ -275,7 +233,7 @@
                 </ion-item>
               </ion-list>
             </div>
-            
+
             <!-- Lista de pistas de Spotify -->
             <div class="tracks-container" *ngIf="activeTab === 'spotify'">
               <div class="spotify-status" *ngIf="spotifyLoggedIn">
@@ -284,14 +242,10 @@
                   <ion-label>Conectado como {{spotifyUsername}}</ion-label>
                 </ion-chip>
               </div>
-              
+
               <ion-list lines="none">
-                <ion-item 
-                  *ngFor="let track of spotifyTracks" 
-                  button 
-                  (click)="selectTrack(track)"
-                  [class.active-track]="currentTrack?.id === track.id"
-                >
+                <ion-item *ngFor="let track of spotifyTracks" button (click)="selectTrack(track)"
+                  [class.active-track]="currentTrack?.id === track.id">
                   <ion-thumbnail slot="start">
                     <img [src]="track.thumbnail" alt="Portada">
                   </ion-thumbnail>
@@ -299,21 +253,19 @@
                     <h2>{{track.title}}</h2>
                     <p>{{track.artist}} • {{formatTime(track.duration)}}</p>
                   </ion-label>
-                  <ion-icon 
-                    slot="end" 
-                    [name]="currentTrack?.id === track.id && isPlaying ? 'pause-outline' : 'play-outline'"
-                  ></ion-icon>
+                  <ion-icon slot="end"
+                    [name]="currentTrack?.id === track.id && isPlaying ? 'pause-outline' : 'play-outline'"></ion-icon>
                 </ion-item>
-                
+
                 <ion-item *ngIf="spotifyTracks.length === 0" lines="none" class="empty-list">
                   <ion-label class="ion-text-center">
-                    <ion-icon name="logo-spotify" size="large"></ion-icon>
+                    <img src="assets/icons/spotify.svg" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
                     <p>Conéctate a Spotify para ver tus pistas</p>
                   </ion-label>
                 </ion-item>
               </ion-list>
             </div>
-            
+
             <!-- Indicador de carga -->
             <div class="loading-container" *ngIf="isLoading">
               <ion-spinner name="dots"></ion-spinner>
@@ -324,7 +276,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  
+
   <!-- Modal para guardar patrón -->
   <ion-modal [isOpen]="showSavePatternModal" (didDismiss)="showSavePatternModal = false">
     <ng-template>
@@ -341,39 +293,30 @@
       <ion-content class="ion-padding">
         <ion-item>
           <ion-label position="stacked">Nombre del Patrón</ion-label>
-          <ion-input 
-            [(ngModel)]="newPatternName" 
-            placeholder="Ej: Fiesta, Relajación, etc."
-          ></ion-input>
+          <ion-input [(ngModel)]="newPatternName" placeholder="Ej: Fiesta, Relajación, etc."></ion-input>
         </ion-item>
-        
+
         <div class="preset-preview">
           <ion-label>Vista previa:</ion-label>
           <div class="preset-colors-preview">
-            <div 
-              *ngFor="let light of lights | filterBy: ['isOn']: true"
-              class="preset-color-preview" 
-              [style.background-color]="light.color"
-            ></div>
-            
+            <div *ngFor="let light of lights | filterBy: ['isOn']: true" class="preset-color-preview"
+              [style.background-color]="light.color"></div>
+
             <ion-text *ngIf="(lights | filterBy: ['isOn']: true).length === 0" color="medium">
               No hay luces encendidas para guardar
             </ion-text>
           </div>
         </div>
-        
-        <ion-button 
-          expand="block" 
-          (click)="savePattern()"
-          [disabled]="(lights | filterBy: ['isOn']: true).length === 0"
-        >
+
+        <ion-button expand="block" (click)="savePattern()"
+          [disabled]="(lights | filterBy: ['isOn']: true).length === 0">
           <ion-icon name="save-outline" slot="start"></ion-icon>
           Guardar Patrón
         </ion-button>
       </ion-content>
     </ng-template>
   </ion-modal>
-  
+
   <!-- Modal para login de Spotify -->
   <ion-modal [isOpen]="showSpotifyLoginModal" (didDismiss)="showSpotifyLoginModal = false">
     <ng-template>
@@ -389,25 +332,20 @@
       </ion-header>
       <ion-content class="ion-padding spotify-login-content">
         <div class="spotify-logo">
-          <ion-icon name="logo-spotify" size="large"></ion-icon>
+          <img src="assets/icons/spotify.svg" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
         </div>
-        
+
         <h2>Conecta tu cuenta de Spotify</h2>
         <p>Para acceder a tu música y playlists, necesitas conectar tu cuenta de Spotify.</p>
-        
-        <ion-button 
-          expand="block" 
-          color="success" 
-          (click)="loginToSpotify()"
-          [disabled]="isLoading"
-        >
+
+        <ion-button expand="block" color="success" (click)="loginToSpotify()" [disabled]="isLoading">
           <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
           <span *ngIf="!isLoading">
-            <ion-icon name="logo-spotify" slot="start"></ion-icon>
+            <img src="assets/icons/spotify.svg" slot="start" alt="Spotify" style="width: 20px; height: 20px;" />
             Conectar con Spotify
           </span>
         </ion-button>
-        
+
         <p class="disclaimer">
           Esta es una demostración. En una implementación real, se utilizaría la API oficial de Spotify.
         </p>
@@ -423,12 +361,12 @@
         <ion-icon name="arrow-back" slot="start"></ion-icon>
         Volver al Inicio
       </ion-button>
-      
+
       <ion-chip [color]="syncEnabled ? 'success' : 'medium'">
         <ion-icon [name]="syncEnabled ? 'musical-note' : 'musical-note-outline'"></ion-icon>
         <ion-label>{{syncEnabled ? 'Sincronización Activa' : 'Sincronización Inactiva'}}</ion-label>
       </ion-chip>
-      
+
       <ion-chip *ngIf="currentTrack" color="primary">
         <ion-icon name="musical-note"></ion-icon>
         <ion-label>{{currentTrack.title}}</ion-label>

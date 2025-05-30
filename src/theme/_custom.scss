@@ -1,0 +1,39 @@
+/* Estilos generales */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f4f4;
+  color: #1e1e1e;
+}
+
+/* Modo sensibilidad: colores suaves y tipografía clara */
+body.sensitivity-mode {
+  background-color: #fdf6e3;
+  color: #333;
+
+  ion-button,
+  .start-button,
+  .sensitivity-button {
+    background-color: #e0e0e0 !important;
+    color: #000 !important;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    border: 2px solid #aaa !important;
+  }
+
+  .slide-title,
+  .slide-description,
+  .sensitivity-note {
+    font-size: 1.1rem;
+    color: #2e2e2e;
+  }
+
+  ion-icon {
+    filter: grayscale(100%);
+  }
+
+  /* Transiciones suaves, sin parpadeos */
+  * {
+    transition: background-color 0.4s ease, color 0.4s ease !important;
+  }
+
+}

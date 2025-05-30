@@ -1,112 +1,246 @@
-// Ionic Variables and Theming
-// For more info, please see: http://ionicframework.com/docs/theming/
-
-/** Ionic CSS Variables **/
+// ===== TEMA NORMAL (ROJIZO OSCURO) =====
 :root {
-    /** primary **/
-    --ion-color-primary: #8b0000;
-    --ion-color-primary-rgb: 139, 0, 0;
-    --ion-color-primary-contrast: #ffffff;
-    --ion-color-primary-contrast-rgb: 255, 255, 255;
-    --ion-color-primary-shade: #7a0000;
-    --ion-color-primary-tint: #971a1a;
+  // Colores principales basados en tu tema original
+  --glow-primary: #8b0000;        // Tu color primario original
+  --glow-secondary: #a52a2a;      // Tu color secundario original  
+  --glow-accent: #800020;         // Tu color terciario original
+  --glow-success: #2dd36f;        // Verde para éxito
+  --glow-warning: #ffc409;        // Amarillo para advertencias
+  --glow-danger: #eb445a;         // Rojo más claro para peligro
   
-    /** secondary **/
-    --ion-color-secondary: #a52a2a;
-    --ion-color-secondary-rgb: 165, 42, 42;
-    --ion-color-secondary-contrast: #ffffff;
-    --ion-color-secondary-contrast-rgb: 255, 255, 255;
-    --ion-color-secondary-shade: #912525;
-    --ion-color-secondary-tint: #ae3f3f;
+  // Fondos basados en tu tema oscuro original
+  --glow-dark: #4a1010;           // Tu color dark original
+  --glow-darker: #1a0a0a;         // Tu background-color original
+  --glow-card-bg: #2c1414;        // Tu card-background original
+  --glow-card-active: #3a1a1a;    // Ligeramente más claro
+  --glow-card-selected: #4a2020;  // Para elementos seleccionados
   
-    /** tertiary **/
-    --ion-color-tertiary: #800020;
-    --ion-color-tertiary-rgb: 128, 0, 32;
-    --ion-color-tertiary-contrast: #ffffff;
-    --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-    --ion-color-tertiary-shade: #71001c;
-    --ion-color-tertiary-tint: #8d1a36;
+  // Textos
+  --glow-text-primary: #ffffff;
+  --glow-text-secondary: rgba(255, 255, 255, 0.8);
+  --glow-text-muted: rgba(255, 255, 255, 0.6);
+  --glow-text-disabled: rgba(255, 255, 255, 0.3);
   
-    /** success **/
-    --ion-color-success: #2dd36f;
-    --ion-color-success-rgb: 45, 211, 111;
-    --ion-color-success-contrast: #ffffff;
-    --ion-color-success-contrast-rgb: 255, 255, 255;
-    --ion-color-success-shade: #28ba62;
-    --ion-color-success-tint: #42d77d;
+  // Efectos con tinte rojizo
+  --glow-shadow-light: rgba(139, 0, 0, 0.2);
+  --glow-shadow-medium: rgba(139, 0, 0, 0.3);
+  --glow-shadow-heavy: rgba(139, 0, 0, 0.5);
+  --glow-border: rgba(255, 255, 255, 0.1);
+  --glow-border-active: rgba(139, 0, 0, 0.5);
   
-    /** warning **/
-    --ion-color-warning: #ffc409;
-    --ion-color-warning-rgb: 255, 196, 9;
-    --ion-color-warning-contrast: #000000;
-    --ion-color-warning-contrast-rgb: 0, 0, 0;
-    --ion-color-warning-shade: #e0ac08;
-    --ion-color-warning-tint: #ffca22;
+  // Transiciones
+  --glow-transition-fast: 0.2s ease;
+  --glow-transition-normal: 0.3s ease;
+  --glow-transition-slow: 0.5s ease;
   
-    /** danger **/
-    --ion-color-danger: #eb445a;
-    --ion-color-danger-rgb: 235, 68, 90;
-    --ion-color-danger-contrast: #ffffff;
-    --ion-color-danger-contrast-rgb: 255, 255, 255;
-    --ion-color-danger-shade: #cf3c4f;
-    --ion-color-danger-tint: #ed576b;
+  // Gradientes de fondo con tonos rojizos
+  --glow-bg-gradient: 
+    radial-gradient(circle at 10% 20%, rgba(139, 0, 0, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(165, 42, 42, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(128, 0, 32, 0.1) 0%, transparent 30%);
+}
+
+// ===== TEMA SENSIBILIDAD (SUAVE ROJIZO) =====
+body.sensitivity-mode {
+  // Colores principales más suaves pero manteniendo la paleta rojiza
+  --glow-primary: #cc6666;        // Rojo suave
+  --glow-secondary: #d4a4a4;      // Rojo rosado suave
+  --glow-accent: #b87070;         // Rojo grisáceo suave
+  --glow-success: #88cc88;        // Verde suave
+  --glow-warning: #ffdd88;        // Amarillo suave
+  --glow-danger: #ff9999;         // Rojo claro suave
   
-    /** dark **/
-    --ion-color-dark: #4a1010;
-    --ion-color-dark-rgb: 74, 16, 16;
-    --ion-color-dark-contrast: #ffffff;
-    --ion-color-dark-contrast-rgb: 255, 255, 255;
-    --ion-color-dark-shade: #410e0e;
-    --ion-color-dark-tint: #5c2828;
+  // Fondos más claros pero manteniendo el tinte rojizo
+  --glow-dark: #5a3030;           // Más claro que el original
+  --glow-darker: #3a2020;         // Más claro que el original
+  --glow-card-bg: #4a2828;        // Más claro que el original
+  --glow-card-active: #5a3333;    // Ligeramente más claro
+  --glow-card-selected: #6a3838;  // Para elementos seleccionados
   
-    /** medium **/
-    --ion-color-medium: #92949c;
-    --ion-color-medium-rgb: 146, 148, 156;
-    --ion-color-medium-contrast: #ffffff;
-    --ion-color-medium-contrast-rgb: 255, 255, 255;
-    --ion-color-medium-shade: #808289;
-    --ion-color-medium-tint: #9d9fa6;
+  // Textos menos contrastantes
+  --glow-text-primary: #f0e0e0;
+  --glow-text-secondary: rgba(240, 224, 224, 0.8);
+  --glow-text-muted: rgba(240, 224, 224, 0.6);
+  --glow-text-disabled: rgba(240, 224, 224, 0.4);
   
-    /** light **/
-    --ion-color-light: #f4f5f8;
-    --ion-color-light-rgb: 244, 245, 248;
-    --ion-color-light-contrast: #000000;
-    --ion-color-light-contrast-rgb: 0, 0, 0;
-    --ion-color-light-shade: #d7d8da;
-    --ion-color-light-tint: #f5f6f9;
-  }
+  // Efectos más suaves
+  --glow-shadow-light: rgba(204, 102, 102, 0.1);
+  --glow-shadow-medium: rgba(204, 102, 102, 0.15);
+  --glow-shadow-heavy: rgba(204, 102, 102, 0.25);
+  --glow-border: rgba(240, 224, 224, 0.1);
+  --glow-border-active: rgba(204, 102, 102, 0.3);
   
-  @media (prefers-color-scheme: dark) {
-    body {
-      --ion-background-color: #1a0a0a;
-      --ion-background-color-rgb: 26, 10, 10;
+  // Transiciones más lentas
+  --glow-transition-fast: 0.4s ease;
+  --glow-transition-normal: 0.6s ease;
+  --glow-transition-slow: 1s ease;
   
-      --ion-text-color: #ffffff;
-      --ion-text-color-rgb: 255, 255, 255;
-  
-      --ion-color-step-50: #251515;
-      --ion-color-step-100: #302020;
-      --ion-color-step-150: #3b2b2b;
-      --ion-color-step-200: #463636;
-      --ion-color-step-250: #514141;
-      --ion-color-step-300: #5c4c4c;
-      --ion-color-step-350: #675757;
-      --ion-color-step-400: #726262;
-      --ion-color-step-450: #7d6d6d;
-      --ion-color-step-500: #887878;
-      --ion-color-step-550: #938383;
-      --ion-color-step-600: #9e8e8e;
-      --ion-color-step-650: #a99999;
-      --ion-color-step-700: #b4a4a4;
-      --ion-color-step-750: #bfafaf;
-      --ion-color-step-800: #cababa;
-      --ion-color-step-850: #d5c5c5;
-      --ion-color-step-900: #e0d0d0;
-      --ion-color-step-950: #ebdbdb;
-  
-      --ion-item-background: #2c1414;
-      --ion-card-background: #2c1414;
-    }
-  }
-  
-  
+  // Gradientes de fondo más sutiles
+  --glow-bg-gradient: 
+    radial-gradient(circle at 10% 20%, rgba(204, 102, 102, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(212, 164, 164, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(184, 112, 112, 0.05) 0%, transparent 30%);
+}
+
+// ===== VARIABLES IONIC PERSONALIZADAS (TU TEMA ORIGINAL) =====
+:root {
+  /** primary **/
+  --ion-color-primary: #8b0000;
+  --ion-color-primary-rgb: 139, 0, 0;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #7a0000;
+  --ion-color-primary-tint: #971a1a;
+
+  /** secondary **/
+  --ion-color-secondary: #a52a2a;
+  --ion-color-secondary-rgb: 165, 42, 42;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #912525;
+  --ion-color-secondary-tint: #ae3f3f;
+
+  /** tertiary **/
+  --ion-color-tertiary: #800020;
+  --ion-color-tertiary-rgb: 128, 0, 32;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #71001c;
+  --ion-color-tertiary-tint: #8d1a36;
+
+  /** success **/
+  --ion-color-success: #2dd36f;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #28ba62;
+  --ion-color-success-tint: #42d77d;
+
+  /** warning **/
+  --ion-color-warning: #ffc409;
+  --ion-color-warning-rgb: 255, 196, 9;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0ac08;
+  --ion-color-warning-tint: #ffca22;
+
+  /** danger **/
+  --ion-color-danger: #eb445a;
+  --ion-color-danger-rgb: 235, 68, 90;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #cf3c4f;
+  --ion-color-danger-tint: #ed576b;
+
+  /** dark **/
+  --ion-color-dark: #4a1010;
+  --ion-color-dark-rgb: 74, 16, 16;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #410e0e;
+  --ion-color-dark-tint: #5c2828;
+
+  /** medium **/
+  --ion-color-medium: #92949c;
+  --ion-color-medium-rgb: 146, 148, 156;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #808289;
+  --ion-color-medium-tint: #9d9fa6;
+
+  /** light **/
+  --ion-color-light: #f4f5f8;
+  --ion-color-light-rgb: 244, 245, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+
+  // Fondos principales (tu configuración original)
+  --ion-background-color: #1a0a0a;
+  --ion-background-color-rgb: 26, 10, 10;
+  --ion-text-color: #ffffff;
+  --ion-text-color-rgb: 255, 255, 255;
+
+  // Escalas de color (tu configuración original)
+  --ion-color-step-50: #251515;
+  --ion-color-step-100: #302020;
+  --ion-color-step-150: #3b2b2b;
+  --ion-color-step-200: #463636;
+  --ion-color-step-250: #514141;
+  --ion-color-step-300: #5c4c4c;
+  --ion-color-step-350: #675757;
+  --ion-color-step-400: #726262;
+  --ion-color-step-450: #7d6d6d;
+  --ion-color-step-500: #887878;
+  --ion-color-step-550: #938383;
+  --ion-color-step-600: #9e8e8e;
+  --ion-color-step-650: #a99999;
+  --ion-color-step-700: #b4a4a4;
+  --ion-color-step-750: #bfafaf;
+  --ion-color-step-800: #cababa;
+  --ion-color-step-850: #d5c5c5;
+  --ion-color-step-900: #e0d0d0;
+  --ion-color-step-950: #ebdbdb;
+
+  --ion-item-background: #2c1414;
+  --ion-card-background: #2c1414;
+}
+
+// ===== MODO SENSIBILIDAD - AJUSTES IONIC =====
+body.sensitivity-mode {
+  // Ajustar colores de Ionic para modo sensibilidad con tonos rojizos suaves
+  --ion-color-primary: #cc6666;
+  --ion-color-primary-rgb: 204, 102, 102;
+  --ion-color-primary-shade: #b85a5a;
+  --ion-color-primary-tint: #d17575;
+
+  --ion-color-secondary: #d4a4a4;
+  --ion-color-secondary-rgb: 212, 164, 164;
+  --ion-color-secondary-shade: #bb9090;
+  --ion-color-secondary-tint: #d8adad;
+
+  --ion-color-tertiary: #b87070;
+  --ion-color-tertiary-rgb: 184, 112, 112;
+  --ion-color-tertiary-shade: #a26262;
+  --ion-color-tertiary-tint: #bf7e7e;
+
+  // Fondos más claros para modo sensibilidad
+  --ion-background-color: #3a2020;
+  --ion-background-color-rgb: 58, 32, 32;
+  --ion-text-color: #f0e0e0;
+  --ion-text-color-rgb: 240, 224, 224;
+
+  // Escalas de color más suaves
+  --ion-color-step-50: #453030;
+  --ion-color-step-100: #503838;
+  --ion-color-step-150: #5b4040;
+  --ion-color-step-200: #664848;
+  --ion-color-step-250: #715050;
+  --ion-color-step-300: #7c5858;
+  --ion-color-step-350: #876060;
+  --ion-color-step-400: #926868;
+  --ion-color-step-450: #9d7070;
+  --ion-color-step-500: #a87878;
+  --ion-color-step-550: #b38080;
+  --ion-color-step-600: #be8888;
+  --ion-color-step-650: #c99090;
+  --ion-color-step-700: #d49898;
+  --ion-color-step-750: #dfa0a0;
+  --ion-color-step-800: #eaa8a8;
+  --ion-color-step-850: #f5b0b0;
+  --ion-color-step-900: #ffb8b8;
+  --ion-color-step-950: #ffc0c0;
+
+  --ion-item-background: #4a2828;
+  --ion-card-background: #4a2828;
+}
+
+// ===== SPOTIFY COLOR =====
+:root {
+  --spotify-green: #1DB954;
+}
+
+body.sensitivity-mode {
+  --spotify-green: #66cc88; // Verde más suave para modo sensibilidad
+}
