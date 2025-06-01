@@ -1,4 +1,3 @@
-
 <ion-header>
   <ion-toolbar color="dark" class="glowlink-header">
     <ion-buttons slot="start">
@@ -6,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <span class="app-title">GlowLink</span>
-      <span class="app-subtitle">         Luces Predeterminadas</span>
+      <span class="app-subtitle"> Luces Predeterminadas</span>
     </ion-title>
     <ion-buttons slot="end">
       <ion-button [color]="bluetoothConnected ? 'primary' : 'medium'">
@@ -23,77 +22,56 @@
         <div class="page-intro">
           <ion-icon name="color-palette-outline" class="intro-icon"></ion-icon>
           <h2>Selecciona un modo predeterminado</h2>
-          <p>Elige entre nuestros modos de iluminación diseñados profesionalmente. Cada modo tiene un patrón único de colores y velocidades.</p>
+          <p>Elige entre nuestros modos de iluminación diseñados profesionalmente. Cada modo tiene un patrón único de
+            colores y velocidades.</p>
         </div>
       </ion-col>
     </ion-row>
-    
+
     <!-- Lista de modos predeterminados -->
     <ion-row>
       <ion-col size="12" size-md="6" *ngFor="let mode of presetModes">
-        <ion-card 
-          class="mode-card" 
-          [class.active-mode]="activeMode === mode.id"
-          [class.preview-mode]="previewMode === mode.id"
-        >
+        <ion-card class="mode-card" [class.active-mode]="activeMode === mode.id"
+          [class.preview-mode]="previewMode === mode.id">
           <div class="mode-preview-container">
-            <div 
-              [id]="'preview-' + mode.id" 
-              class="mode-preview" 
-              [style.background-color]="mode.colores[0]"
-            ></div>
+            <div [id]="'preview-' + mode.id" class="mode-preview" [style.background-color]="mode.colores[0]"></div>
           </div>
-          
+
           <ion-card-header>
             <ion-card-title class="mode-title">
               <ion-icon [name]="mode.icono"></ion-icon>
               {{mode.nombre}}
-              <ion-badge 
-                *ngIf="activeMode === mode.id" 
-                color="success" 
-                class="active-badge"
-              >
+              <ion-badge *ngIf="activeMode === mode.id" color="success" class="active-badge">
                 Activo
               </ion-badge>
             </ion-card-title>
           </ion-card-header>
-          
+
           <ion-card-content>
             <p class="mode-description">{{mode.descripcion}}</p>
-            
+
             <div class="mode-colors">
-              <div 
-                *ngFor="let color of mode.colores" 
-                class="color-dot"
-                [style.background-color]="color"
-              ></div>
+              <div *ngFor="let color of mode.colores" class="color-dot" [style.background-color]="color"></div>
             </div>
-            
+
             <div class="mode-speed">
               <span>Velocidad: </span>
               <span class="speed-indicator" [class]="mode.velocidad">
                 <span *ngFor="let _ of [1, 2, 3, 4, 5]" class="speed-dot"></span>
               </span>
             </div>
-            
+
             <div class="mode-actions">
-              <ion-button 
-                fill="clear" 
-                size="small"
-                (mouseenter)="startPreview(mode.id)"
-                (mouseleave)="stopPreview()"
-                (click)="startPreview(mode.id)"
-              >
+              <ion-button fill="clear" size="small" (mouseenter)="startPreview(mode.id)" (mouseleave)="stopPreview()"
+                (click)="startPreview(mode.id)">
                 <ion-icon name="eye-outline" slot="start"></ion-icon>
                 Vista previa
               </ion-button>
-              
-              <ion-button 
-                [color]="activeMode === mode.id ? 'success' : 'primary'"
-                (click)="activateMode(mode.id)"
-                [disabled]="isActivating"
-              >
-                <ion-spinner *ngIf="isActivating && activeMode === mode.id" name="dots" class="button-spinner"></ion-spinner>
+
+              <ion-button [color]="activeMode === mode.id ? 'success' : 'primary'" (click)="activateMode(mode.id)"
+                [disabled]="isActivating">
+                <ion-spinner *ngIf="isActivating && activeMode === mode.id" name="dots"
+                  class="button-spinner"></ion-spinner>
                 <ion-icon *ngIf="!(isActivating && activeMode === mode.id)" name="play-outline" slot="start"></ion-icon>
                 {{activeMode === mode.id ? 'Activado' : 'Activar'}}
               </ion-button>
@@ -103,7 +81,18 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <!-- Pantalla de vista previa fullscreen -->
+  <div *ngIf="previewMode" class="fullscreen-preview" (click)="stopPreview()"
+    [ngStyle]="{ 'background-color': previewBackgroundColor }">
+    <div class="preview-text">
+      Vista previa: {{ previewMode | titlecase }}<br />
+      <small>(toca para salir)</small>
+    </div>
+  </div>
+
 </ion-content>
+
 
 <ion-footer>
   <ion-toolbar color="dark" class="footer-toolbar">
@@ -112,12 +101,12 @@
         <ion-icon name="home-outline" slot="start"></ion-icon>
         Volver al Inicio
       </ion-button>
-      
+
       <ion-chip *ngIf="activeMode" color="success">
         <ion-icon name="checkmark-circle-outline"></ion-icon>
         <ion-label>Modo activo: {{ activeModeName }}</ion-label>
       </ion-chip>
-      
+
       <ion-chip *ngIf="sensitivityModeEnabled" color="warning">
         <ion-icon name="pulse-outline"></ion-icon>
         <ion-label>Modo sensibilidad</ion-label>

@@ -1,6 +1,6 @@
 .tutorial-content {
   --background: #121212;
-  background-image: 
+  background-image:
     radial-gradient(circle at 10% 20%, rgba(255, 85, 0, 0.1) 0%, transparent 20%),
     radial-gradient(circle at 90% 80%, rgba(0, 170, 255, 0.1) 0%, transparent 20%),
     radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 30%);
@@ -16,7 +16,7 @@
   left: 0;
   right: 0;
   z-index: 10;
-  
+
   .indicator-dot {
     width: 10px;
     height: 10px;
@@ -24,7 +24,7 @@
     background-color: rgba(255, 255, 255, 0.3);
     margin: 0 5px;
     transition: all 0.3s ease;
-    
+
     &.active {
       background-color: #ff5500;
       transform: scale(1.2);
@@ -38,12 +38,12 @@
   top: 15px;
   right: 15px;
   z-index: 10;
-  
+
   ion-button {
     --color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
     text-transform: none;
-    
+
     &:hover {
       --color: #ffffff;
     }
@@ -71,8 +71,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .slide-content {
@@ -87,7 +94,7 @@
 // Logo y título
 .logo-container {
   margin-bottom: 30px;
-  
+
   .logo {
     width: 120px;
     height: 120px;
@@ -96,8 +103,15 @@
 }
 
 @keyframes pulse {
-  from { transform: scale(1); opacity: 0.8; }
-  to { transform: scale(1.05); opacity: 1; }
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  to {
+    transform: scale(1.05);
+    opacity: 1;
+  }
 }
 
 .slide-title {
@@ -126,7 +140,8 @@
 }
 
 // Botones
-.next-button, .start-button {
+.next-button,
+.start-button {
   margin-top: 30px;
   --background: #ff5500;
   --background-hover: #e04a00;
@@ -151,7 +166,7 @@
 // Iconos de características
 .icon-container {
   margin-bottom: 30px;
-  
+
   .feature-icon {
     font-size: 80px;
     color: #ff5500;
@@ -162,7 +177,7 @@
 .feature-illustration {
   width: 100%;
   margin: 30px 0;
-  
+
   .control-preview {
     display: flex;
     justify-content: space-around;
@@ -170,12 +185,12 @@
     border-radius: 16px;
     padding: 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    
+
     .control-option {
       display: flex;
       flex-direction: column;
       align-items: center;
-      
+
       .option-icon {
         width: 50px;
         height: 50px;
@@ -183,7 +198,7 @@
         margin-bottom: 10px;
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
       }
-      
+
       span {
         color: rgba(255, 255, 255, 0.9);
         font-size: 0.9rem;
@@ -200,13 +215,13 @@
   padding: 8px 12px;
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 20px;
-  
+
   .firebase-icon {
     color: #FFCA28;
     font-size: 20px;
     margin-right: 8px;
   }
-  
+
   span {
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
@@ -231,32 +246,61 @@
   font-style: italic;
 }
 
+
+.fullscreen-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.5s ease;
+}
+
+.preview-text {
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 1rem;
+}
+
+ion-content {
+  --overflow: auto;
+}
+
+
+
 // Optimizaciones para móviles
 @media (max-width: 576px) {
   .slide-title {
     font-size: 1.5rem;
   }
-  
+
   .slide-description {
     font-size: 1rem;
   }
-  
+
   .color-preview {
     width: 120px;
     height: 120px;
   }
-  
+
   .feature-icon {
     font-size: 60px !important;
   }
-  
+
   .control-preview {
     .control-option {
       .option-icon {
         width: 40px;
         height: 40px;
       }
-      
+
       span {
         font-size: 0.8rem;
       }

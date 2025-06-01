@@ -48,7 +48,7 @@ export class TutorialPage implements OnInit {
       return
     }
 
-    // Comprobar si el modo de sensibilidad ya está configurado
+    // Comprobamos si el modo de sensibilidad ya está configurado
     const sensitivityMode = localStorage.getItem("sensitivityMode")
     if (sensitivityMode === "true") {
       this.sensitivityModeEnabled = true

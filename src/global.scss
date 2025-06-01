@@ -178,12 +178,42 @@ body.sensitivity-mode {
   .title,
   .subtitle,
   .slide-title,
-  .slide-description,
   .sensitivity-note {
     font-weight: 600;
     color: #2e2e2e !important;
     font-size: 1.1rem;
   }
+
+  h1.title {
+    font-weight: bold;
+    background: linear-gradient(to right, #5a0303, #e17272);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  h1.slide-title {
+    font-size: 22px;
+  }
+
+  .sensitivity-note {
+    font-size: 14.5px;
+  }
+
+  .slide-description {
+    font-size: 16px;
+    font-weight: normal;
+    /* Asegura que no sea negrita */
+  }
+
+  span.app-title {
+    font-weight: bold;
+    background: linear-gradient(to right, #a33b3b, #c59a9a);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
 
   *,
   *::before,
@@ -193,7 +223,7 @@ body.sensitivity-mode {
   }
 
   .main-content {
-    --background: #c2bdad!important;
+    --background: #c2bdad !important;
     --padding-top: 24px;
     --padding-bottom: 24px;
     --padding-start: 16px;
@@ -296,7 +326,7 @@ body.sensitivity-mode {
   .list-md {
     background-color: #888 !important;
     padding: 10px;
-    
+
   }
 }
 

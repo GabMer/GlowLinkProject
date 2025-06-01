@@ -57,7 +57,8 @@ import {
     snowOutline,
     prismOutline,
     pulseOutline,
-    sunnyOutline, personCircleOutline, settingsOutline, logOutOutline } from "ionicons/icons"
+    sunnyOutline, personCircleOutline, settingsOutline, logOutOutline
+} from "ionicons/icons"
 
 @Component({
     selector: "app-preset-modes",
@@ -100,6 +101,10 @@ export class PresetModesPage implements OnInit, OnDestroy {
     activeMode: string | null = null
     previewMode: string | null = null
     isActivating = false
+
+
+    previewBackgroundColor: string = '#000'; // inicial
+
 
     // Modos predeterminados
     presetModes = [
@@ -211,7 +216,7 @@ export class PresetModesPage implements OnInit, OnDestroy {
         private router: Router,
     ) {
         /// Registrar los iconos
-        addIcons({personCircleOutline,homeOutline,settingsOutline,logOutOutline,colorPaletteOutline,eyeOutline,playOutline,checkmarkCircleOutline,pulseOutline,pauseOutline,arrowBack,flashOutline,contrastOutline,bluetoothOutline,bluetooth,sparklesOutline,moonOutline,sunny,musicalNoteOutline,leafOutline,heartOutline,waterOutline,flameOutline,snowOutline,prismOutline});
+        addIcons({ personCircleOutline, homeOutline, settingsOutline, logOutOutline, colorPaletteOutline, eyeOutline, playOutline, checkmarkCircleOutline, pulseOutline, pauseOutline, arrowBack, flashOutline, contrastOutline, bluetoothOutline, bluetooth, sparklesOutline, moonOutline, sunny, musicalNoteOutline, leafOutline, heartOutline, waterOutline, flameOutline, snowOutline, prismOutline });
 
     }
 
@@ -288,22 +293,23 @@ export class PresetModesPage implements OnInit, OnDestroy {
         // Detener cualquier vista previa anterior
         this.stopPreview()
 
-        // Establecer el modo de vista previa actual
-        this.previewMode = modeId
-
         // Obtener el modo
         const mode = this.presetModes.find((m) => m.id === modeId)
         if (!mode) return
 
         // Iniciar la animación de vista previa
         let colorIndex = 0
-        this.previewIntervals[modeId] = setInterval(() => {
-            const previewElement = document.getElementById(`preview-${modeId}`)
-            if (previewElement) {
-                previewElement.style.backgroundColor = mode.colores[colorIndex]
-                colorIndex = (colorIndex + 1) % mode.colores.length
-            }
-        }, mode.intervalo / 2) // Vista previa más rápida que la animación real
+
+
+        setTimeout(() => {
+            this.previewMode = modeId;
+            this.previewBackgroundColor = mode.colores[0];
+
+            this.previewIntervals[modeId] = setInterval(() => {
+                this.previewBackgroundColor = mode.colores[colorIndex];
+                colorIndex = (colorIndex + 1) % mode.colores.length;
+            }, mode.intervalo / 2) // Vista previa más rápida que la animación real
+        }) 
     }
 
     /**
@@ -319,6 +325,7 @@ export class PresetModesPage implements OnInit, OnDestroy {
         // Resetear el modo de vista previa
         this.previewMode = null
     }
+    
 
     /**
      * Activa un modo predeterminado

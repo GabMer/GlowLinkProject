@@ -171,7 +171,7 @@
                 <ion-label>Internet</ion-label>
               </ion-segment-button>
               <ion-segment-button value="spotify">
-                <img src="assets/icons/spotify.svg" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
+                <img src="assets/icons/spotify.png" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
                 <ion-label>Spotify</ion-label>
               </ion-segment-button>
             </ion-segment>
@@ -259,7 +259,7 @@
 
                 <ion-item *ngIf="spotifyTracks.length === 0" lines="none" class="empty-list">
                   <ion-label class="ion-text-center">
-                    <img src="assets/icons/spotify.svg" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
+                    <img src="assets/icons/spotify.png" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
                     <p>Conéctate a Spotify para ver tus pistas</p>
                   </ion-label>
                 </ion-item>
@@ -332,7 +332,7 @@
       </ion-header>
       <ion-content class="ion-padding spotify-login-content">
         <div class="spotify-logo">
-          <img src="assets/icons/spotify.svg" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
+          <img src="assets/icons/spotify.png" alt="Spotify" style="width: 24px; height: 24px; vertical-align: middle;" />
         </div>
 
         <h2>Conecta tu cuenta de Spotify</h2>
@@ -341,7 +341,7 @@
         <ion-button expand="block" color="success" (click)="loginToSpotify()" [disabled]="isLoading">
           <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
           <span *ngIf="!isLoading">
-            <img src="assets/icons/spotify.svg" slot="start" alt="Spotify" style="width: 20px; height: 20px;" />
+            <img src="assets/icons/spotify.png" slot="start" alt="Spotify" style="width: 20px; height: 20px;" />
             Conectar con Spotify
           </span>
         </ion-button>
