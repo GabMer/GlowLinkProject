@@ -34,6 +34,7 @@
     "@capacitor/haptics": "7.0.0",
     "@capacitor/ios": "^7.2.0",
     "@capacitor/keyboard": "7.0.0",
+    "@capacitor/share": "^7.0.1",
     "@capacitor/status-bar": "7.0.0",
     "@ionic/angular": "^8.5.2",
     "cordova-plugin-android-permissions": "^1.1.5",
@@ -43,6 +44,7 @@
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.8.1",
+    "uuid": "^11.1.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

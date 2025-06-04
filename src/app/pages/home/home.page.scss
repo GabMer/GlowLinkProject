@@ -9,18 +9,29 @@
   height: 100%;
 }
 
+.custom-modal {
+  --width: 90%;
+  --max-width: 400px;
+  --height: auto;
+  --border-radius: 12px;
+  --box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+  --background: #fff;
+  align-self: center;
+}
+
+
 .logo-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 30px;
-  
+
   .logo {
     width: 80px;
     height: 80px;
     margin-bottom: 10px;
   }
-  
+
   .title {
     color: white;
     font-size: 28px;
@@ -28,7 +39,7 @@
     font-weight: bold;
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
   }
-  
+
   .subtitle {
     color: #cccccc;
     font-size: 16px;
@@ -53,12 +64,12 @@
   border: 1px solid rgba(255, 0, 0, 0.3);
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  
+
   &:active {
     transform: scale(0.98);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
-  
+
   .show-icon {
     display: flex;
     align-items: center;
@@ -68,31 +79,31 @@
     border-radius: 50%;
     background-color: rgba(255, 0, 0, 0.1);
     margin-right: 16px;
-    
+
     ion-icon {
       font-size: 24px;
     }
   }
-  
+
   .show-content {
     flex: 1;
-    
+
     h2 {
       margin: 0 0 4px;
       font-size: 18px;
       font-weight: 600;
     }
-    
+
     p {
       margin: 0;
       font-size: 14px;
       color: rgba(255, 255, 255, 0.7) !important;
     }
   }
-  
+
   .show-arrow {
     margin-left: 10px;
-    
+
     ion-icon {
       font-size: 20px;
     }
@@ -115,7 +126,7 @@
 .show-item:last-child {
   opacity: 0.8;
   position: relative;
-  
+
   &::after {
     content: "Próximamente";
     position: absolute;

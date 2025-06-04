@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Sala de Espera</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Modal para ingresar código -->
+  <ion-modal [isOpen]="showModal" backdropDismiss="false">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Unirse a Sala</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-label>Ingresa el código de la sala</ion-label>
+      <ion-input [(ngModel)]="inputCode" placeholder="Ej: ABC123"></ion-input>
+      <ion-button expand="block" (click)="onJoinClicked()">Entrar</ion-button>
+    </ion-content>
+  </ion-modal>
+
+  <!-- Contenido sala de espera -->
+  <div *ngIf="roomCode && !showModal">
+    <h2>Esperando para iniciar el show</h2>
+    <p>Código de sala: <strong>{{ roomCode }}</strong></p>
+    <ion-button expand="block" (click)="startShow()">Iniciar Show</ion-button>
+  </div>
+
+</ion-content>

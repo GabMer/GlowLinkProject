@@ -1,46 +1,23 @@
-import { Component, OnInit, OnDestroy } from "@angular/core"
-import { CommonModule } from "@angular/common"
-import { FormsModule } from "@angular/forms"
-import { Router } from "@angular/router"
-import { Subscription } from "rxjs"
-import { Light } from "../../models/light.model"
-import { LightService } from "../../services/light.service"
-import { BluetoothService } from "../../services/bluetooth.service"
-import { SettingsService } from "../../services/settings.service"
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { Router } from "@angular/router";
+import { Subscription } from "rxjs";
+import { Light } from "../../models/light.model";
+import { LightService } from "../../services/light.service";
+import { BluetoothService } from "../../services/bluetooth.service";
+import { SettingsService } from "../../services/settings.service";
+import { Share } from "@capacitor/share";
+import { IonicModule, ToastController } from "@ionic/angular";
+import { addIcons } from "ionicons";
+import { RoomService } from "../../services/room.service";
+import { Room } from "../../models/room.model";
 
-import {
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonContent,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonItem,
-    IonLabel,
-    IonBackButton,
-    IonChip,
-    IonFooter,
-    ToastController,
-    IonBadge,
-    IonSpinner,
-} from "@ionic/angular/standalone"
-
-import { addIcons } from "ionicons"
 import {
     colorPaletteOutline,
     playOutline,
-    pauseOutline,
     eyeOutline,
     checkmarkCircleOutline,
-    arrowBack,
     flashOutline,
     contrastOutline,
     bluetoothOutline,
@@ -57,56 +34,33 @@ import {
     snowOutline,
     prismOutline,
     pulseOutline,
-    sunnyOutline, personCircleOutline, settingsOutline, logOutOutline
-} from "ionicons/icons"
+    sunnyOutline,
+    personCircleOutline,
+    settingsOutline,
+    logOutOutline,
+} from "ionicons/icons";
 
 @Component({
     selector: "app-preset-modes",
+    standalone: true,
     templateUrl: "./preset-modes.page.html",
     styleUrls: ["./preset-modes.page.scss"],
-    standalone: true,
-    imports: [
-        CommonModule,
-        FormsModule,
-        IonHeader,
-        IonToolbar,
-        IonTitle,
-        IonButtons,
-        IonButton,
-        IonIcon,
-        IonContent,
-        IonGrid,
-        IonRow,
-        IonCol,
-        IonCard,
-        IonCardHeader,
-        IonCardTitle,
-        IonCardContent,
-        IonItem,
-        IonLabel,
-        IonBackButton,
-        IonChip,
-        IonFooter,
-        IonBadge,
-        IonSpinner,
-    ],
+    imports: [CommonModule, FormsModule, IonicModule],
 })
 export class PresetModesPage implements OnInit, OnDestroy {
-    // Datos del componente
-    lights: Light[] = []
-    bluetoothConnected = false
-    sensitivityModeEnabled = false
+    // --- Datos internos ---
+    lights: Light[] = [];
+    bluetoothConnected = false;
+    sensitivityModeEnabled = false;
 
-    // Estado de UI
-    activeMode: string | null = null
-    previewMode: string | null = null
-    isActivating = false
+    // --- Estado de UI ---
+    activeMode: string | null = null;       // Si es 'fiesta', 'relax', etc.
+    previewMode: string | null = null;      // Para vista previa momentánea
+    isActivating = false;                   // Mientas arranca el preset
+    previewBackgroundColor = "#000";        // color de fondo en preview
+    roomId: string | null = null;           // ID real de la sala (UUID)
 
-
-    previewBackgroundColor: string = '#000'; // inicial
-
-
-    // Modos predeterminados
+    // --- Definición de modos predeterminados ---
     presetModes = [
         {
             id: "fiesta",
@@ -115,7 +69,7 @@ export class PresetModesPage implements OnInit, OnDestroy {
             icono: "sparkles-outline",
             colores: ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"],
             velocidad: "rapido",
-            intervalo: 500, // milisegundos entre cambios
+            intervalo: 500,
         },
         {
             id: "relax",
@@ -198,15 +152,14 @@ export class PresetModesPage implements OnInit, OnDestroy {
             velocidad: "medio",
             intervalo: 2000,
         },
-    ]
+    ];
 
-    // Intervalos para animaciones
-    previewIntervals: { [key: string]: any } = {}
-    activeInterval: any = null
-    currentColorIndex = 0
+    // Para controlar los intervalos de preview y animación real:
+    previewIntervals: { [key: string]: any } = {};
+    activeInterval: any = null;
+    currentColorIndex = 0;
 
-    // Suscripciones
-    private subscriptions: Subscription[] = []
+    private subscriptions: Subscription[] = [];
 
     constructor(
         private lightService: LightService,
@@ -214,251 +167,253 @@ export class PresetModesPage implements OnInit, OnDestroy {
         private settingsService: SettingsService,
         private toastController: ToastController,
         private router: Router,
+        private roomService: RoomService
     ) {
-        /// Registrar los iconos
-        addIcons({ personCircleOutline, homeOutline, settingsOutline, logOutOutline, colorPaletteOutline, eyeOutline, playOutline, checkmarkCircleOutline, pulseOutline, pauseOutline, arrowBack, flashOutline, contrastOutline, bluetoothOutline, bluetooth, sparklesOutline, moonOutline, sunny, musicalNoteOutline, leafOutline, heartOutline, waterOutline, flameOutline, snowOutline, prismOutline });
-
+        // Registramos Ionicons que vayamos a usar
+        addIcons({
+            "color-palette-outline": colorPaletteOutline,
+            "play-outline": playOutline,
+            "eye-outline": eyeOutline,
+            "checkmark-circle-outline": checkmarkCircleOutline,
+            "flash-outline": flashOutline,
+            "contrast-outline": contrastOutline,
+            "bluetooth-outline": bluetoothOutline,
+            bluetooth: bluetooth,
+            "home-outline": homeOutline,
+            "sparkles-outline": sparklesOutline,
+            "moon-outline": moonOutline,
+            sunny: sunny,
+            "musical-note-outline": musicalNoteOutline,
+            "leaf-outline": leafOutline,
+            "heart-outline": heartOutline,
+            "water-outline": waterOutline,
+            "flame-outline": flameOutline,
+            "snow-outline": snowOutline,
+            "prism-outline": prismOutline,
+            "pulse-outline": pulseOutline,
+            "sunny-outline": sunnyOutline,
+            "person-circle-outline": personCircleOutline,
+            "settings-outline": settingsOutline,
+            "log-out-outline": logOutOutline,
+        });
     }
 
     ngOnInit() {
-        // Suscribirse a los cambios en los servicios
+        // 1) Nos suscribimos a los servicios para luz y Bluetooth
         this.subscriptions.push(
             this.lightService.lights$.subscribe((lights) => {
-                this.lights = lights
+                this.lights = lights;
             }),
-
             this.bluetoothService.connectionStatus$.subscribe((status) => {
-                this.bluetoothConnected = status
+                this.bluetoothConnected = status;
             }),
-
-            // Suscribirse al modo de sensibilidad
             this.settingsService.sensitivityMode$.subscribe((enabled) => {
-                this.sensitivityModeEnabled = enabled
-
-                // Ajustar velocidades si el modo de sensibilidad está activado
+                this.sensitivityModeEnabled = enabled;
                 if (enabled) {
-                    this.adjustIntervalForSensitivityMode()
+                    this.adjustIntervalForSensitivityMode();
+                } else {
+                    this.restoreOriginalIntervals();
                 }
-            }),
-        )
+            })
+        );
 
-        // Verificar si ya hay un modo activo
-        const currentMode = this.lightService.getCurrentMode()
-        if (currentMode && currentMode.startsWith("preset:")) {
-            this.activeMode = currentMode.replace("preset:", "")
-
-            // Iniciar la animación del modo activo
-            this.startModeAnimation(this.activeMode)
+        // 2) Verificamos si vinimos desde RoomPlayerPage (/room-player/:id),
+        //    para “preseleccionar” el presetId que guardamos en la sala.
+        const urlParts = this.router.url.split("/");
+        // urlParts[0] == "" (slash inicial), urlParts[1] == "room-player", urlParts[2] == "<UUID>"
+        if (urlParts.length >= 3 && urlParts[1] === "room-player") {
+            const roomId = urlParts[2];
+            const room = this.roomService.getRoom(roomId);
+            if (room && room.showType === "default" && room.presetId) {
+                // Marcamos ese preset como activo
+                this.activeMode = room.presetId;
+                // Iniciamos inmediatamente su animación
+                this.startModeAnimation(room.presetId);
+                // También guardamos localmente el roomId
+                this.roomId = roomId;
+            }
         }
     }
 
     ngOnDestroy() {
-        // Cancelar todas las suscripciones para evitar memory leaks
-        this.subscriptions.forEach((sub) => sub.unsubscribe())
-
-        // Limpiar todos los intervalos
-        this.clearAllIntervals()
+        this.subscriptions.forEach((sub) => sub.unsubscribe());
+        this.clearAllIntervals();
     }
 
-    /**
-     * Ajusta los intervalos para el modo de sensibilidad
-     */
+    /** Si cambió el modo de “sensibilidad”, hacemos que las transiciones sean más lentas */
     adjustIntervalForSensitivityMode() {
-        if (this.sensitivityModeEnabled) {
-            // Hacer las transiciones más lentas para el modo de sensibilidad
-            this.presetModes.forEach((mode) => {
-                mode.intervalo = mode.intervalo * 1.5
-            })
-        } else {
-            // Restaurar los intervalos originales
-            this.presetModes = [
-                { ...this.presetModes[0], intervalo: 500 },
-                { ...this.presetModes[1], intervalo: 3000 },
-                { ...this.presetModes[2], intervalo: 5000 },
-                { ...this.presetModes[3], intervalo: 2000 },
-                { ...this.presetModes[4], intervalo: 8000 },
-                { ...this.presetModes[5], intervalo: 4000 },
-                { ...this.presetModes[6], intervalo: 2500 },
-                { ...this.presetModes[7], intervalo: 1500 },
-                { ...this.presetModes[8], intervalo: 3500 },
-                { ...this.presetModes[9], intervalo: 2000 },
-            ]
-        }
+        this.presetModes.forEach((mode) => {
+            mode.intervalo = mode.intervalo * 1.5;
+        });
+    }
+    restoreOriginalIntervals() {
+        this.presetModes = [
+            { ...this.presetModes[0], intervalo: 500 },
+            { ...this.presetModes[1], intervalo: 3000 },
+            { ...this.presetModes[2], intervalo: 5000 },
+            { ...this.presetModes[3], intervalo: 2000 },
+            { ...this.presetModes[4], intervalo: 8000 },
+            { ...this.presetModes[5], intervalo: 4000 },
+            { ...this.presetModes[6], intervalo: 2500 },
+            { ...this.presetModes[7], intervalo: 1500 },
+            { ...this.presetModes[8], intervalo: 3500 },
+            { ...this.presetModes[9], intervalo: 2000 },
+        ];
     }
 
-    /**
-     * Inicia la vista previa de un modo
-     */
+    /** Inicia la animación de “preview” (pantalla completa, tocable para salir). */
     startPreview(modeId: string) {
-        // Detener cualquier vista previa anterior
-        this.stopPreview()
+        this.stopPreview();
+        const mode = this.presetModes.find((m) => m.id === modeId);
+        if (!mode) return;
 
-        // Obtener el modo
-        const mode = this.presetModes.find((m) => m.id === modeId)
-        if (!mode) return
+        let colorIndex = 0;
+        this.previewMode = modeId;
+        this.previewBackgroundColor = mode.colores[0] || "#000";
 
-        // Iniciar la animación de vista previa
-        let colorIndex = 0
-
-
-        setTimeout(() => {
-            this.previewMode = modeId;
-            this.previewBackgroundColor = mode.colores[0];
-
-            this.previewIntervals[modeId] = setInterval(() => {
-                this.previewBackgroundColor = mode.colores[colorIndex];
-                colorIndex = (colorIndex + 1) % mode.colores.length;
-            }, mode.intervalo / 2) // Vista previa más rápida que la animación real
-        }) 
+        this.previewIntervals[modeId] = setInterval(() => {
+            this.previewBackgroundColor = mode.colores[colorIndex];
+            colorIndex = (colorIndex + 1) % mode.colores.length;
+        }, mode.intervalo / 2);
     }
 
-    /**
-     * Detiene la vista previa
-     */
     stopPreview() {
-        // Limpiar todos los intervalos de vista previa
-        Object.keys(this.previewIntervals).forEach((key) => {
-            clearInterval(this.previewIntervals[key])
-            delete this.previewIntervals[key]
-        })
-
-        // Resetear el modo de vista previa
-        this.previewMode = null
+        Object.values(this.previewIntervals).forEach((i) => clearInterval(i));
+        this.previewMode = null;
     }
-    
 
-    /**
-     * Activa un modo predeterminado
-     */
+    /** Este método abre el preset real (no preview), crea la sala en RoomService y navega. */
     async activateMode(modeId: string) {
-        // Detener cualquier vista previa
-        this.stopPreview()
-
-        // Detener el modo activo actual si existe
+        // 1) Detenemos cualquier preview o animación anterior
+        this.stopPreview();
         if (this.activeInterval) {
-            clearInterval(this.activeInterval)
-            this.activeInterval = null
+            clearInterval(this.activeInterval);
+            this.activeInterval = null;
         }
+        // 2) Marcamos activeMode = presetId
+        this.activeMode = modeId;
+        this.isActivating = true;
 
-        // Establecer el nuevo modo activo
-        this.activeMode = modeId
-        this.isActivating = true
+        // 3) Prendemos todas las luces y arrancamos animación local
+        const mode = this.presetModes.find((m) => m.id === modeId);
+        if (!mode) return;
 
-        // Obtener el modo
-        const mode = this.presetModes.find((m) => m.id === modeId)
-        if (!mode) return
+        this.lightService.turnAllLightsOn();
+        this.lightService.setMode(`preset:${modeId}`);
+        this.startModeAnimation(modeId);
 
-        // Asegurarse de que todas las luces estén encendidas
-        this.lightService.turnAllLightsOn()
+        // 4) Mostramos toast “Modo X activado”
+        await this.showToast(`Modo ${mode.nombre} activado`);
+        this.isActivating = false;
 
-        // Establecer el modo en el servicio
-        this.lightService.setMode(`preset:${modeId}`)
+        // 5) Creamos la sala en RoomService con showType='default', presetId=modeId
+        const newRoom: Room = this.roomService.createRoom("default", "user123", modeId);
+        this.roomId = newRoom.id;
 
-        // Iniciar la animación del modo
-        this.startModeAnimation(modeId)
-
-        // Mostrar mensaje de confirmación
-        await this.showToast(`Modo ${mode.nombre} activado`)
-
-        this.isActivating = false
+        // 6) Navegamos A room-player/<NUEVO_ID>
+        //    De esta forma, Angular cambiará la vista a RoomPlayerPage.
+        this.router.navigate(["/room-player", this.roomId]);
     }
 
-    /**
-     * Inicia la animación de un modo
-     */
+    /** La animación “real” que va rotando colores en la app */
     startModeAnimation(modeId: string) {
-        // Obtener el modo
-        const mode = this.presetModes.find((m) => m.id === modeId)
-        if (!mode) return
+        const mode = this.presetModes.find((m) => m.id === modeId);
+        if (!mode) return;
 
-        // Iniciar la animación
-        this.currentColorIndex = 0
+        this.currentColorIndex = 0;
+        // Aplico el primer color de inmediato
+        this.applyColorToLights(mode.colores[this.currentColorIndex]);
 
-        // Aplicar el primer color inmediatamente
-        this.applyColorToLights(mode.colores[this.currentColorIndex])
-
-        // Configurar el intervalo para cambiar colores
+        // Luego seteo el interval
         this.activeInterval = setInterval(() => {
-            this.currentColorIndex = (this.currentColorIndex + 1) % mode.colores.length
-            this.applyColorToLights(mode.colores[this.currentColorIndex])
-        }, mode.intervalo)
+            this.currentColorIndex = (this.currentColorIndex + 1) % mode.colores.length;
+            this.applyColorToLights(mode.colores[this.currentColorIndex]);
+        }, mode.intervalo);
     }
 
-    /**
-     * Aplica un color a todas las luces encendidas
-     */
+    /** Cambia el color de todos los “lights” encendidos */
     applyColorToLights(color: string) {
-        const lights = this.lightService.getLights()
+        const lights = this.lightService.getLights();
         const updatedLights = lights.map((light) => {
             if (light.isOn) {
-                const rgb = this.hexToRgb(color)
-                return { ...light, color, rgb }
+                const rgb = this.hexToRgb(color);
+                return { ...light, color, rgb };
             }
-            return light
-        })
+            return light;
+        });
+        this.lightService.lightsSubject.next(updatedLights);
 
-        this.lightService.lightsSubject.next(updatedLights)
-
-        // Enviar datos al dispositivo Bluetooth si está conectado
+        // (Sólo para compatibilidad si en algún momento realmente usaras Bluetooth, aunque ahora no es el caso)
         if (this.bluetoothConnected) {
-            this.bluetoothService.sendData({
-                type: "colorChange",
-                color: color,
-            })
+            this.bluetoothService.sendData({ type: "colorChange", color });
         }
     }
 
     /**
-     * Convierte un color hexadecimal a RGB
+     *  Al presionar el ícono de “Bluetooth”, si todavía NO existía roomId,
+     *  creamos una nueva sala con el preset actualmente activo (o 'fiesta' por defecto).
+     *  Luego siempre abrimos el diálogo de “compartir” (capacitor/share).
      */
+    onBluetoothButtonClick() {
+        if (!this.roomId) {
+            const selected = this.activeMode || "fiesta";
+            const newRoom: Room = this.roomService.createRoom("default", "user123", selected);
+            this.roomId = newRoom.id;
+            console.log(`Sala creada con código: ${this.roomId}`);
+        } else {
+            console.log(`Sala ya existente: ${this.roomId}`);
+        }
+        this.shareRoomCode();
+    }
+
+    async shareRoomCode() {
+        if (!this.roomId) return;
+        const shareText = `Únete a mi sala con el código: ${this.roomId}`;
+        const shareUrl = `https://glowlink.com/room-player/${this.roomId}`;
+        try {
+            await Share.share({
+                title: "Invitación a la sala",
+                text: shareText,
+                url: shareUrl,
+                dialogTitle: "Compartir sala",
+            });
+            console.log("Compartido correctamente");
+        } catch (error) {
+            console.error("Error al compartir:", error);
+        }
+    }
+
     hexToRgb(hex: string): { r: number; g: number; b: number } {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result
             ? {
                 r: Number.parseInt(result[1], 16),
                 g: Number.parseInt(result[2], 16),
                 b: Number.parseInt(result[3], 16),
             }
-            : { r: 0, g: 0, b: 0 }
+            : { r: 0, g: 0, b: 0 };
     }
 
-    /**
-     * Limpia todos los intervalos
-     */
     clearAllIntervals() {
-        // Limpiar intervalos de vista previa
-        Object.keys(this.previewIntervals).forEach((key) => {
-            clearInterval(this.previewIntervals[key])
-        })
-
-        // Limpiar intervalo activo
-        if (this.activeInterval) {
-            clearInterval(this.activeInterval)
-            this.activeInterval = null
-        }
+        Object.values(this.previewIntervals).forEach((i) => clearInterval(i));
+        if (this.activeInterval) clearInterval(this.activeInterval);
+        this.activeInterval = null;
     }
 
-    /**
-     * Muestra un mensaje toast
-     */
     async showToast(message: string): Promise<void> {
         const toast = await this.toastController.create({
             message,
             duration: 2000,
             position: "bottom",
-        })
-        await toast.present()
+        });
+        await toast.present();
     }
 
-    /**
-     * Navega a la página de inicio
-     */
     goToHome() {
-        this.router.navigate(["/home"])
+        this.router.navigate(["/home"]);
     }
 
     get activeModeName(): string | undefined {
-        return this.presetModes.find(m => m.id === this.activeMode)?.nombre;
+        return this.presetModes.find((m) => m.id === this.activeMode)?.nombre;
     }
-
 }

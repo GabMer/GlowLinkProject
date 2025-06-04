@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core"
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router"
 import { AuthGuard } from "./guards/auth.guard"
+import { RoomPlayerPage } from './pages/room-player/room-player.page';
 
 const routes: Routes = [
   {
@@ -9,14 +10,10 @@ const routes: Routes = [
   },
   {
     path: "home",
-    loadChildren: () => import("./pages/home/home.module").then((m) => m.HomePageModule),
+    loadChildren: () => import("./pages/home/home.page").then((m) => m.HomePage),
     canActivate: [AuthGuard],
   },
-  {
-    path: "light-control",
-    loadChildren: () => import("./pages/light-control/light-control.module").then((m) => m.LightControlPageModule),
-    canActivate: [AuthGuard],
-  },
+
   {
     path: "welcome",
     loadComponent: () => import("./pages/welcome/welcome.page").then((m) => m.WelcomePage),
@@ -30,15 +27,21 @@ const routes: Routes = [
     loadComponent: () => import("./pages/selected-lights/selected-lights.page").then((m) => m.SelectedLightsPage),
     canActivate: [AuthGuard],
   },
+  { path: 'room-player/:roomCode', component: RoomPlayerPage },
+  {
+    path: 'waiting-room/:code',
+    loadComponent: () => import('./pages/waiting-room/waiting-room.page').then(m => m.WaitingRoomPage)
+  },
   {
     path: "",
     redirectTo: "logo",
     pathMatch: "full",
   },
+
 ]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

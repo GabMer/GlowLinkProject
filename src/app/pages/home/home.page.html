@@ -4,12 +4,10 @@
     <h1 class="title">GlowLink</h1>
     <p class="subtitle">Seleccione un modo de espectáculo</p>
   </div>
-  
+
   <div class="shows-container">
-    <div *ngFor="let show of shows" 
-         class="show-item" 
-         [style.background-color]="show.color"
-         (click)="selectShow(show.id)">
+    <div *ngFor="let show of shows" class="show-item" [style.background-color]="show.color"
+      (click)="selectShow(show.id)">
       <div class="show-icon">
         <ion-icon [name]="show.icon" [style.color]="show.iconColor"></ion-icon>
       </div>
@@ -22,10 +20,11 @@
       </div>
     </div>
   </div>
-  
-  <!-- Botón comentado ya que no existe la ruta "connection" -->
-  <!-- <ion-button expand="block" class="connect-button" (click)="connectDevices()">
-    <ion-icon name="bluetooth" slot="start"></ion-icon>
-    Conectar dispositivos
-  </ion-button> -->
+
+
+  <ion-button expand="block" class="join-room-button" fill="outline" (click)="joinExistingRoom()">
+    <ion-icon name="enter-outline" slot="start"></ion-icon>
+    Unirse a sala existente
+  </ion-button>
+
 </ion-content>

@@ -1,0 +1,19 @@
+<ion-content fullscreen class="room-player">
+    <div class="show-container">
+        <ng-container [ngSwitch]="showType">
+            <!-- Si es 'default' mostramos el componente de preset-modes -->
+            <app-preset-modes *ngSwitchCase="'default'"></app-preset-modes>
+
+            <!-- Si es 'custom' mostramos LightControlPage -->
+            <app-light-control *ngSwitchCase="'custom'"></app-light-control>
+
+            <!-- Si es 'music' mostramos MusicSyncPage -->
+            <app-music-sync *ngSwitchCase="'music'"></app-music-sync>
+        </ng-container>
+
+        <!-- Si hay texto en room.text, lo mostramos como overlay -->
+        <div class="text-overlay" [ngClass]="room?.textMode" *ngIf="room?.text">
+            <span>{{ room?.text }}</span>
+        </div>
+    </div>
+</ion-content>

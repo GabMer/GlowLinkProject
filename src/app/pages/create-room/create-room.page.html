@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Crear Sala</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item *ngFor="let show of shows" button (click)="createRoom(show.id)">
+      <ion-icon [name]="show.icon" slot="start"></ion-icon>
+      <ion-label>
+        <h2>{{ show.name }}</h2>
+        <p>{{ show.description }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

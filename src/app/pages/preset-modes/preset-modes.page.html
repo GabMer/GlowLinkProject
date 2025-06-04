@@ -8,7 +8,7 @@
       <span class="app-subtitle"> Luces Predeterminadas</span>
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button [color]="bluetoothConnected ? 'primary' : 'medium'">
+      <ion-button (click)="onBluetoothButtonClick()" [color]="bluetoothConnected ? 'primary' : 'medium'">
         <ion-icon [name]="bluetoothConnected ? 'bluetooth' : 'bluetooth-outline'"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -28,19 +28,19 @@
       </ion-col>
     </ion-row>
 
-    <!-- Lista de modos predeterminados -->
+    <!-- Lista de modos -->
     <ion-row>
       <ion-col size="12" size-md="6" *ngFor="let mode of presetModes">
         <ion-card class="mode-card" [class.active-mode]="activeMode === mode.id"
           [class.preview-mode]="previewMode === mode.id">
           <div class="mode-preview-container">
-            <div [id]="'preview-' + mode.id" class="mode-preview" [style.background-color]="mode.colores[0]"></div>
+            <div [id]="'preview-' + mode.id" class="mode-preview" [style.backgroundColor]="mode.colores[0]"></div>
           </div>
 
           <ion-card-header>
             <ion-card-title class="mode-title">
               <ion-icon [name]="mode.icono"></ion-icon>
-              {{mode.nombre}}
+              {{ mode.nombre }}
               <ion-badge *ngIf="activeMode === mode.id" color="success" class="active-badge">
                 Activo
               </ion-badge>
@@ -48,10 +48,10 @@
           </ion-card-header>
 
           <ion-card-content>
-            <p class="mode-description">{{mode.descripcion}}</p>
+            <p class="mode-description">{{ mode.descripcion }}</p>
 
             <div class="mode-colors">
-              <div *ngFor="let color of mode.colores" class="color-dot" [style.background-color]="color"></div>
+              <div *ngFor="let color of mode.colores" class="color-dot" [style.backgroundColor]="color"></div>
             </div>
 
             <div class="mode-speed">
@@ -62,8 +62,8 @@
             </div>
 
             <div class="mode-actions">
-              <ion-button fill="clear" size="small" (mouseenter)="startPreview(mode.id)" (mouseleave)="stopPreview()"
-                (click)="startPreview(mode.id)">
+              <!-- Ahora sólo click, no hover -->
+              <ion-button fill="clear" size="small" (click)="startPreview(mode.id)">
                 <ion-icon name="eye-outline" slot="start"></ion-icon>
                 Vista previa
               </ion-button>
@@ -73,7 +73,7 @@
                 <ion-spinner *ngIf="isActivating && activeMode === mode.id" name="dots"
                   class="button-spinner"></ion-spinner>
                 <ion-icon *ngIf="!(isActivating && activeMode === mode.id)" name="play-outline" slot="start"></ion-icon>
-                {{activeMode === mode.id ? 'Activado' : 'Activar'}}
+                {{ activeMode === mode.id ? "Activado" : "Activar" }}
               </ion-button>
             </div>
           </ion-card-content>
@@ -82,7 +82,7 @@
     </ion-row>
   </ion-grid>
 
-  <!-- Pantalla de vista previa fullscreen -->
+  <!-- Overlay de vista previa fullscreen -->
   <div *ngIf="previewMode" class="fullscreen-preview" (click)="stopPreview()"
     [ngStyle]="{ 'background-color': previewBackgroundColor }">
     <div class="preview-text">
@@ -90,7 +90,6 @@
       <small>(toca para salir)</small>
     </div>
   </div>
-
 </ion-content>
 
 
