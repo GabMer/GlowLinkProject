@@ -1,3 +1,6 @@
+/* Custom theme - MOVED TO TOP */
+@use 'theme/custom';
+
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
@@ -34,4 +37,129 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
+<<<<<<< Updated upstream
 @import '@ionic/angular/css/palettes/dark.system.css';
+=======
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Sensitivity mode styles */
+.sensitivity-mode {
+  --animation-duration: 2s;
+  --transition-duration: 1s;
+  
+  * {
+    animation-duration: var(--animation-duration) !important;
+    transition-duration: var(--transition-duration) !important;
+  }
+}
+
+/* Global app styles */
+ion-content {
+  --background: var(--ion-background-color, #ffffff);
+}
+
+.light-card {
+  margin: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.light-card:hover {
+  transform: translateY(-2px);
+}
+
+.light-card.active {
+  border: 2px solid var(--ion-color-primary);
+}
+
+.color-picker {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.brightness-slider {
+  --bar-background: #ddd;
+  --bar-background-active: var(--ion-color-primary);
+  --knob-background: var(--ion-color-primary);
+}
+
+.animation-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.bluetooth-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--ion-color-light);
+  color: var(--ion-color-dark);
+}
+
+.bluetooth-status.connected {
+  background: var(--ion-color-success);
+  color: white;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.preset-card {
+  text-align: center;
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--ion-color-light);
+}
+
+.preset-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.preset-card.active {
+  background: var(--ion-color-primary);
+  color: white;
+}
+
+.preset-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.fab-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+>>>>>>> Stashed changes

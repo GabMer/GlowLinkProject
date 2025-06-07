@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 import type { Routes } from "@angular/router"
 import { AuthGuard } from "./guards/auth.guard"
+=======
+import { Routes } from "@angular/router";
+import { AuthGuard } from "./guards/auth.guard";
+>>>>>>> Stashed changes
 
 export const routes: Routes = [
   {
@@ -44,13 +49,39 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+<<<<<<< Updated upstream
     path: "room/:id",
     loadComponent: () => import("./pages/room/room.page").then((m) => m.RoomPage),
     canActivate: [AuthGuard],
   },
   {
+=======
+    path: "room-player/:id",
+    loadComponent: () => import("./pages/room-player/room-player.page").then((m) => m.RoomPlayerPage),
+  },
+  {
+    path: "waiting-room",
+    loadComponent: () => import("./pages/waiting-room/waiting-room.page").then((m) => m.WaitingRoomPage),
+  },
+  {
+    path: "waiting-room/:code",
+    loadComponent: () => import("./pages/waiting-room/waiting-room.page").then((m) => m.WaitingRoomPage),
+  },
+  // Ruta por defecto, cuando alguien va a "/"
+  {
+>>>>>>> Stashed changes
     path: "",
     redirectTo: "tutorial",
     pathMatch: "full",
   },
+<<<<<<< Updated upstream
 ]
+=======
+  // "Catch-all" para cualquier otra URL no definida
+  {
+    path: "**",
+    redirectTo: "/home",
+    pathMatch: "full"
+  },
+];
+>>>>>>> Stashed changes

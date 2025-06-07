@@ -1,128 +1,23 @@
-import { Component, OnInit, OnDestroy } from "@angular/core"
+import { Component, type OnInit, type OnDestroy } from "@angular/core"
+import { Router } from "@angular/router"
+import type { Subscription } from "rxjs"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
-import { Router } from "@angular/router"
-import { Subscription } from "rxjs"
-import { Light, Preset, TimerSettings } from "../../models/light.model"
-import { LightService } from "../../services/light.service"
-import { BluetoothService } from "../../services/bluetooth.service"
-import { FilterByPipe } from "../../pipes/filter-by.pipe"
-import { AuthService } from "../../services/auth.service"
+import { IonicModule, ToastController } from "@ionic/angular"
+import { FilterByPipe } from "../filter-by.pipe"  // Cambia la ruta de importación
 
-// Importar componentes Ionic desde standalone
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonSpinner,
-  IonContent,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonToggle,
-  IonItem,
-  IonRange,
-  IonLabel,
-  IonInput,
-  IonSelect,
-  IonSelectOption,
-  IonModal,
-  IonList,
-  IonText,
-  IonChip,
-  IonFooter,
-  IonCheckbox,
-  IonFab,
-  IonFabButton,
-  ToastController,
-  IonBadge,
-  IonMenuButton,
-  IonMenu,
-  IonMenuToggle,
-  IonAvatar,
-} from "@ionic/angular/standalone"
-
-// Importar addIcons para los iconos
 import { addIcons } from "ionicons"
-import {
-  bulbOutline,
-  bulb,
-  bluetoothOutline,
-  bluetooth,
-  timerOutline,
-  contrastOutline,
-  flashOutline,
-  chevronUpOutline,
-  chevronDownOutline,
-  colorWandOutline,
-  addOutline,
-  closeOutline,
-  saveOutline,
-  eyeOutline,
-  checkmarkCircleOutline,
-  arrowForward,
-  menuOutline,
-  logOutOutline,
-  personCircleOutline,
-  settingsOutline,
-  homeOutline,
-} from "ionicons/icons"
+// ... resto del código igual ...
 
 @Component({
   selector: "app-light-control",
   templateUrl: "./light-control.page.html",
   styleUrls: ["./light-control.page.scss"],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    FilterByPipe,
-    // Importar componentes Ionic individualmente
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonSpinner,
-    IonContent,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonToggle,
-    IonItem,
-    IonRange,
-    IonLabel,
-    IonInput,
-    IonSelect,
-    IonSelectOption,
-    IonModal,
-    IonList,
-    IonText,
-    IonChip,
-    IonFooter,
-    IonCheckbox,
-    IonFab,
-    IonFabButton,
-    IonBadge,
-    IonMenuButton,
-    IonMenu,
-    IonMenuToggle,
-    IonAvatar,
-  ],
+  imports: [CommonModule, FormsModule, IonicModule, FilterByPipe],
 })
 export class LightControlPage implements OnInit, OnDestroy {
+<<<<<<< Updated upstream
   // Datos del componente
   lights: Light[] = []
   presets: Preset[] = []
@@ -423,3 +318,7 @@ export class LightControlPage implements OnInit, OnDestroy {
     }
   }
 }
+=======
+  // ... resto del código igual ...
+}
+>>>>>>> Stashed changes

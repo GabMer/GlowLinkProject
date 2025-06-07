@@ -1,7 +1,5 @@
 import { Component } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router"
-// Importar componentes Ionic desde standalone
 import { IonApp, IonRouterOutlet } from "@ionic/angular/standalone"
 
 @Component({
@@ -9,9 +7,8 @@ import { IonApp, IonRouterOutlet } from "@ionic/angular/standalone"
   templateUrl: "app.component.html",
   styleUrls: ["app.component.scss"],
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, IonApp, IonRouterOutlet, RouterOutlet],
+  imports: [CommonModule, IonApp, IonRouterOutlet],
 })
 export class AppComponent {
   constructor() {}
 }
-

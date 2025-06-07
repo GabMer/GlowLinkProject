@@ -36,6 +36,7 @@
     "@capacitor/keyboard": "7.0.0",
     "@capacitor/status-bar": "7.0.0",
     "@ionic/angular": "^8.5.2",
+    "@types/uuid": "^10.0.0",
     "cordova-plugin-android-permissions": "^1.1.5",
     "cordova-plugin-file": "^8.0.0",
     "cordova-plugin-media": "^7.0.0",
