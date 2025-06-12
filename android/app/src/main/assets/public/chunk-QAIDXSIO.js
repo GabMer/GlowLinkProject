@@ -1,0 +1,1 @@
+import{G as a}from"./chunk-DUGB4KSN.js";var s=(()=>{let r=class r{transform(t,e,f){return t?!e||!f?t:t.filter(u=>{let n=!0;return e.forEach(c=>{u[c]!==f&&(n=!1)}),n}):[]}};r.\u0275fac=function(e){return new(e||r)},r.\u0275pipe=a({name:"filterBy",type:r,pure:!0});let i=r;return i})();export{s as a};

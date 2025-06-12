@@ -28,12 +28,16 @@
     "@awesome-cordova-plugins/core": "^6.4.0",
     "@awesome-cordova-plugins/file": "^6.16.0",
     "@awesome-cordova-plugins/media": "^6.16.0",
+    "@capacitor-community/media": "^8.0.1",
     "@capacitor/android": "^7.2.0",
     "@capacitor/app": "7.0.0",
     "@capacitor/core": "^7.2.0",
+    "@capacitor/device": "^7.0.1",
+    "@capacitor/filesystem": "^7.1.1",
     "@capacitor/haptics": "7.0.0",
     "@capacitor/ios": "^7.2.0",
     "@capacitor/keyboard": "7.0.0",
+    "@capacitor/push-notifications": "^7.0.1",
     "@capacitor/share": "^7.0.1",
     "@capacitor/status-bar": "7.0.0",
     "@ionic/angular": "^8.5.2",
@@ -77,5 +81,10 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "ts-node": "^8.3.0",
     "typescript": "~5.6.3"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-file": {}
+    }
   }
 }

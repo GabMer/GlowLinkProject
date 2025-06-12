@@ -15,9 +15,15 @@ import { LightService } from "../../services/light.service"
 import { BluetoothService } from "../../services/bluetooth.service"
 import { AuthService } from "../../services/auth.service"
 import { SettingsService } from "../../services/settings.service"
+import { MusicFileService } from "../../services/music-file.service"
+import { YouTubeService } from "../../services/youtube.service"
+import { SpotifyService } from "../../services/spotify.service"
 import { FilterByPipe } from "../../pipes/filter-by.pipe"
-
-import { IonicModule, ToastController } from "@ionic/angular"
+import { IonContent } from '@ionic/angular';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { HttpClientModule } from '@angular/common/http';
+import { logoYoutube } from 'ionicons/icons';
+import { IonicModule, ToastController, LoadingController, AlertController } from "@ionic/angular"
 import { addIcons } from "ionicons"
 import {
   musicalNoteOutline,
@@ -25,40 +31,49 @@ import {
   playOutline,
   pauseOutline,
   stopOutline,
-  playSkipForwardOutline,
-  playSkipBackOutline,
   volumeHighOutline,
   volumeMuteOutline,
-  repeatOutline,
-  shuffleOutline,
   cloudDownloadOutline,
   folderOpenOutline,
-  searchOutline,
   colorWandOutline,
-  flashOutline,
-  contrastOutline,
   arrowBack,
   closeOutline,
   saveOutline,
   addOutline,
   checkmarkOutline,
-  refreshOutline,
-  linkOutline,
   bluetoothOutline,
   bluetooth,
+  searchOutline,
+  refreshOutline,
+  logOutOutline,
+  arrowForward,
 } from "ionicons/icons"
+
+interface Track {
+  id: string
+  title: string
+  artist: string
+  duration: number
+  source: string
+  thumbnail: string
+  type: "device" | "youtube" | "spotify"
+  originalData?: any
+}
 
 @Component({
   selector: "app-music-sync",
   templateUrl: "./music-sync.page.html",
   styleUrls: ["./music-sync.page.scss"],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, FilterByPipe],
+  imports: [CommonModule, FormsModule, IonicModule, FilterByPipe, HttpClientModule],
+  providers: [YouTubeService, SpotifyService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
+
 export class MusicSyncPage implements OnInit, OnDestroy {
   @ViewChild("audioPlayer") audioPlayer!: ElementRef<HTMLAudioElement>
   @ViewChild("audioVisualizer") audioVisualizer!: ElementRef<HTMLCanvasElement>
+  @ViewChild(IonContent) content!: IonContent
 
   // Datos del componente
   lights: Light[] = []
@@ -67,7 +82,7 @@ export class MusicSyncPage implements OnInit, OnDestroy {
   userEmail: string | null = null
 
   // Estados de UI
-  activeTab = "device" // device, internet, spotify
+  activeTab = "device" // device, youtube, spotify
   isPlaying = false
   isMuted = false
   currentTime = 0
@@ -81,14 +96,17 @@ export class MusicSyncPage implements OnInit, OnDestroy {
   searchQuery = ""
   isLoading = false
   showSpotifyLoginModal = false
-  spotifyLoggedIn = false
-  spotifyUsername = ""
+  showCreateRoomModal = false
 
   // Datos de música
   deviceTracks: Track[] = []
-  internetTracks: Track[] = []
+  youtubeTracks: Track[] = []
   spotifyTracks: Track[] = []
   currentTrack: Track | null = null
+
+  // Estados de servicios
+  spotifyAuthenticated = false
+  spotifyUserProfile: any = null
 
   // Análisis de audio
   audioContext: AudioContext | null = null
@@ -98,7 +116,7 @@ export class MusicSyncPage implements OnInit, OnDestroy {
   animationFrameId: number | null = null
   beatDetected = false
   lastBeatTime = 0
-  beatThreshold = 1.5 // Umbral para detectar un beat
+  beatThreshold = 1.5
 
   // Sincronización
   syncInterval: any = null
@@ -114,9 +132,14 @@ export class MusicSyncPage implements OnInit, OnDestroy {
     private lightService: LightService,
     private bluetoothService: BluetoothService,
     private toastController: ToastController,
+    private loadingController: LoadingController,
+    private alertController: AlertController,
     private router: Router,
     private authService: AuthService,
     private settingsService: SettingsService,
+    private musicFileService: MusicFileService,
+    private youtubeService: YouTubeService,
+    private spotifyService: SpotifyService,
   ) {
     // Registrar los iconos
     addIcons({
@@ -125,40 +148,51 @@ export class MusicSyncPage implements OnInit, OnDestroy {
       "play-outline": playOutline,
       "pause-outline": pauseOutline,
       "stop-outline": stopOutline,
-      "play-skip-forward-outline": playSkipForwardOutline,
-      "play- skip-back-outline": playSkipBackOutline,
       "volume-high-outline": volumeHighOutline,
       "volume-mute-outline": volumeMuteOutline,
-      "repeat-outline": repeatOutline,
-      "shuffle-outline": shuffleOutline,
       "cloud-download-outline": cloudDownloadOutline,
       "folder-open-outline": folderOpenOutline,
-      "search-outline": searchOutline,
       "color-wand-outline": colorWandOutline,
-      "flash-outline": flashOutline,
-      "contrast-outline": contrastOutline,
       "arrow-back": arrowBack,
       "close-outline": closeOutline,
       "save-outline": saveOutline,
       "add-outline": addOutline,
       "checkmark-outline": checkmarkOutline,
-      "refresh-outline": refreshOutline,
-      "link-outline": linkOutline,
       "bluetooth-outline": bluetoothOutline,
       bluetooth: bluetooth,
+      "search-outline": searchOutline,
+      "refresh-outline": refreshOutline,
+      "log-out-outline": logOutOutline,
+      "arrow-forward": arrowForward,
+      'logo-youtube': logoYoutube
     })
   }
 
   ngOnInit() {
+    this.initializeComponent()
+    this.loadInitialMusic()
+  }
+
+  ngAfterViewInit() {
+    this.initAudioContext()
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe())
+    this.stopPlayback()
+    this.cleanupAudioContext()
+  }
+
+  /**
+   * Inicializa el componente y las suscripciones
+   */
+  private initializeComponent(): void {
     // Obtener información del usuario actual
     this.subscriptions.push(
       this.authService.currentUser$.subscribe((user) => {
         this.userEmail = user?.email ?? null
       }),
-    )
 
-    // Suscribirse a los cambios en los servicios
-    this.subscriptions.push(
       this.lightService.lights$.subscribe((lights) => {
         this.lights = lights
       }),
@@ -170,58 +204,405 @@ export class MusicSyncPage implements OnInit, OnDestroy {
       this.bluetoothService.connectionStatus$.subscribe((status) => {
         this.bluetoothConnected = status
       }),
-    )
 
-    // Suscribirse al modo de sensibilidad
-    this.subscriptions.push(
       this.settingsService.sensitivityMode$.subscribe((enabled) => {
         this.sensitivityModeEnabled = enabled
-        // Aplicar ajustes visuales para el modo de sensibilidad
         this.applyVisualSettings()
 
-        // Ajustar la sensibilidad y velocidad de los cambios de luz
         if (enabled) {
-          this.syncSensitivity = 30 // Menor sensibilidad para cambios más suaves
-          this.beatThreshold = 2.0 // Umbral más alto para detectar menos beats
+          this.syncSensitivity = 30
+          this.beatThreshold = 2.0
         } else {
-          this.syncSensitivity = 50 // Sensibilidad normal
-          this.beatThreshold = 1.5 // Umbral normal
+          this.syncSensitivity = 50
+          this.beatThreshold = 1.5
         }
       }),
+
+      // Suscribirse al estado de autenticación de Spotify
+      this.spotifyService.authStatus$.subscribe((isAuth) => {
+        this.spotifyAuthenticated = isAuth
+      }),
+
+      this.spotifyService.userProfile$.subscribe((profile) => {
+        this.spotifyUserProfile = profile
+      }),
     )
-
-    // Cargar pistas de música reales
-    this.loadMusicTracks()
   }
 
-  ngAfterViewInit() {
-    // Inicializar el contexto de audio y el analizador
-    this.initAudioContext()
+  /**
+   * Carga la música inicial
+   */
+  private async loadInitialMusic(): Promise<void> {
+    // Cargar archivos del dispositivo
+    await this.loadDeviceMusic()
   }
 
-  ngOnDestroy() {
-    // Cancelar todas las suscripciones para evitar memory leaks
-    this.subscriptions.forEach((sub) => sub.unsubscribe())
+  /**
+   * Carga archivos de música del dispositivo
+   */
+  private async loadDeviceMusic(): Promise<void> {
+    try {
+      const loading = await this.loadingController.create({
+        message: "Buscando música...",
+        duration: 5000,
+      })
+      await loading.present()
 
-    // Detener la reproducción y liberar recursos
-    this.stopPlayback()
-    this.cleanupAudioContext()
+      const musicFiles = await this.musicFileService.searchMusicFiles()
+      this.deviceTracks = musicFiles.map((file) => ({
+        id: file.id,
+        title: file.title,
+        artist: file.artist,
+        duration: file.duration,
+        source: file.path,
+        thumbnail: file.thumbnail,
+        type: "device" as const,
+        originalData: file,
+      }))
+
+      await loading.dismiss()
+    } catch (error) {
+      console.error("Error cargando música del dispositivo:", error)
+      this.showToast("Error al acceder a los archivos de música del dispositivo")
+    }
   }
 
-  // Añadir método para aplicar ajustes visuales
-  applyVisualSettings() {
+  /**
+   * Cambia la pestaña activa
+   */
+  changeTab(tab: string) {
+    this.activeTab = tab
+    this.searchQuery = "" // Limpiar búsqueda al cambiar de pestaña
+
+    if (this.isPlaying) {
+      this.stopPlayback()
+    }
+
+    // Si seleccionamos Spotify y no está autenticado, mostrar modal de login
+    if (tab === "spotify" && !this.spotifyAuthenticated) {
+      this.showSpotifyLoginModal = true
+    }
+  }
+
+  /**
+   * Busca música según la pestaña activa
+   */
+  async searchMusic(): Promise<void> {
+    if (!this.searchQuery.trim()) {
+      // Si no hay búsqueda, mostrar contenido por defecto
+      if (this.activeTab === "device") {
+        await this.loadDeviceMusic()
+      }
+      return
+    }
+
+    this.isLoading = true
+
+    try {
+      switch (this.activeTab) {
+        case "device":
+          this.searchDeviceMusic()
+          break
+        case "youtube":
+          await this.searchYouTubeMusic()
+          break
+        case "spotify":
+          await this.searchSpotifyMusic()
+          break
+      }
+    } catch (error) {
+      console.error("Error en búsqueda:", error)
+      this.showToast("Error en la búsqueda. Inténtalo de nuevo.")
+    } finally {
+      this.isLoading = false
+    }
+  }
+
+  /**
+   * Busca en archivos del dispositivo
+   */
+  private searchDeviceMusic(): void {
+    const filteredFiles = this.musicFileService.searchFiles(this.searchQuery)
+    this.deviceTracks = filteredFiles.map((file) => ({
+      id: file.id,
+      title: file.title,
+      artist: file.artist,
+      duration: file.duration,
+      source: file.path,
+      thumbnail: file.thumbnail,
+      type: "device" as const,
+      originalData: file,
+    }))
+  }
+
+  /**
+   * Busca en YouTube
+   */
+  private async searchYouTubeMusic(): Promise<void> {
+    try {
+      const videos = await this.youtubeService.searchMusic(this.searchQuery).toPromise()
+      this.youtubeTracks =
+        videos?.map((video) => ({
+          id: video.id,
+          title: video.title,
+          artist: video.artist,
+          duration: video.duration,
+          source: video.url,
+          thumbnail: video.thumbnail,
+          type: "youtube" as const,
+          originalData: video,
+        })) || []
+    } catch (error) {
+      console.error("Error buscando en YouTube:", error)
+      this.showToast("Error al buscar en YouTube. Verifica tu conexión.")
+    }
+  }
+
+  /**
+   * Busca en Spotify
+   */
+  private async searchSpotifyMusic(): Promise<void> {
+    if (!this.spotifyAuthenticated) {
+      this.showSpotifyLoginModal = true
+      return
+    }
+
+    try {
+      const tracks = await this.spotifyService.searchTracks(this.searchQuery).toPromise()
+      this.spotifyTracks =
+        tracks?.map((track) => ({
+          id: track.id,
+          title: track.title,
+          artist: track.artist,
+          duration: track.duration,
+          source: track.previewUrl || track.externalUrl,
+          thumbnail: track.thumbnail,
+          type: "spotify" as const,
+          originalData: track,
+        })) || []
+    } catch (error) {
+      console.error("Error buscando en Spotify:", error)
+      this.showToast("Error al buscar en Spotify. Inténtalo de nuevo.")
+    }
+  }
+
+  /**
+   * Selecciona una pista para reproducir
+   */
+  async selectTrack(track: Track): Promise<void> {
+    if (this.isPlaying) {
+      this.stopPlayback()
+    }
+
+    this.currentTrack = track
+
+    // Casos especiales según el tipo
+    if (track.type === "spotify" && !track.originalData?.previewUrl) {
+      await this.showAlert(
+        "Información",
+        "Esta pista de Spotify no tiene vista previa disponible. Se abrirá en Spotify.",
+      )
+      window.open(track.source, "_system")
+      return
+    }
+
+    if (track.type === "youtube") {
+      await this.showAlert("Información", "Para reproducir desde YouTube, se abrirá en el navegador.")
+      window.open(track.source, "_system")
+      return
+    }
+
+    // Preparar el reproductor de audio para archivos locales o previews de Spotify
+    if (this.audioPlayer?.nativeElement) {
+      this.audioPlayer.nativeElement.src = track.source
+      this.audioPlayer.nativeElement.load()
+
+      // Iniciar la reproducción automáticamente
+      setTimeout(() => {
+        this.playPause()
+      }, 100)
+    }
+  }
+
+  /**
+   * Inicia o pausa la reproducción
+   */
+  async playPause(): Promise<void> {
+    if (!this.currentTrack) {
+      this.showToast("Selecciona una canción primero")
+      return
+    }
+
+    if (!this.audioPlayer?.nativeElement) {
+      this.showToast("Error: Reproductor no disponible")
+      return
+    }
+
+    try {
+      if (this.isPlaying) {
+        this.audioPlayer.nativeElement.pause()
+        this.isPlaying = false
+        this.stopVisualization()
+      } else {
+        // Reanudar el contexto de audio si está suspendido
+        if (this.audioContext?.state === "suspended") {
+          await this.audioContext.resume()
+        }
+
+        await this.audioPlayer.nativeElement.play()
+        this.isPlaying = true
+        this.startVisualization()
+        this.startLightSync()
+      }
+    } catch (error) {
+      console.error("Error al reproducir audio:", error)
+      this.showToast("No se pudo reproducir la pista de audio.")
+    }
+  }
+
+  /**
+   * Detiene la reproducción
+   */
+  stopPlayback(): void {
+    if (this.audioPlayer?.nativeElement) {
+      this.audioPlayer.nativeElement.pause()
+      this.audioPlayer.nativeElement.currentTime = 0
+      this.isPlaying = false
+      this.stopVisualization()
+    }
+  }
+
+  /**
+   * Actualiza el volumen
+   */
+  updateVolume(): void {
+    if (this.audioPlayer?.nativeElement) {
+      this.audioPlayer.nativeElement.volume = this.volume / 100
+    }
+  }
+
+  /**
+   * Silencia o activa el sonido
+   */
+  toggleMute(): void {
+    if (this.audioPlayer?.nativeElement) {
+      this.isMuted = !this.isMuted
+      this.audioPlayer.nativeElement.muted = this.isMuted
+    }
+  }
+
+  /**
+   * Actualiza el tiempo de reproducción
+   */
+  updateTime(): void {
+    if (this.audioPlayer?.nativeElement) {
+      this.currentTime = this.audioPlayer.nativeElement.currentTime
+      this.duration = this.audioPlayer.nativeElement.duration || 0
+    }
+  }
+
+  /**
+   * Cambia la posición de reproducción
+   */
+  seekTo(event: any): void {
+    if (this.audioPlayer?.nativeElement) {
+      const newTime = event.detail.value
+      this.audioPlayer.nativeElement.currentTime = newTime
+    }
+  }
+
+  /**
+   * Autenticación con Spotify
+   */
+  async loginToSpotify(): Promise<void> {
+    const loading = await this.loadingController.create({
+      message: "Conectando con Spotify...",
+    })
+    await loading.present()
+
+    try {
+      // Para desarrollo, simular autenticación exitosa
+      // En producción, usar this.spotifyService.authenticate()
+      setTimeout(async () => {
+        await this.spotifyService.getClientCredentialsToken().toPromise()
+
+        // Simular datos de usuario
+        this.spotifyAuthenticated = true
+        this.spotifyUserProfile = {
+          display_name: "Usuario Demo",
+          email: "demo@spotify.com",
+        }
+
+        this.showSpotifyLoginModal = false
+        await loading.dismiss()
+        this.showToast("Conectado a Spotify correctamente")
+
+        // Cargar contenido inicial de Spotify
+        await this.loadSpotifyContent()
+      }, 1500)
+    } catch (error) {
+      await loading.dismiss()
+      console.error("Error conectando con Spotify:", error)
+      this.showToast("Error al conectar con Spotify")
+    }
+  }
+
+  /**
+   * Carga contenido inicial de Spotify
+   */
+  private async loadSpotifyContent(): Promise<void> {
+    try {
+      // Buscar música popular por defecto
+      const tracks = await this.spotifyService.searchTracks("top hits 2024").toPromise()
+      this.spotifyTracks =
+        tracks?.map((track) => ({
+          id: track.id,
+          title: track.title,
+          artist: track.artist,
+          duration: track.duration,
+          source: track.previewUrl || track.externalUrl,
+          thumbnail: track.thumbnail,
+          type: "spotify" as const,
+          originalData: track,
+        })) || []
+    } catch (error) {
+      console.error("Error cargando contenido de Spotify:", error)
+    }
+  }
+
+  /**
+   * Cerrar sesión de Spotify
+   */
+  logoutSpotify(): void {
+    this.spotifyService.logout()
+    this.spotifyTracks = []
+    this.showToast("Sesión de Spotify cerrada")
+  }
+
+  /**
+   * Muestra el modal para crear una sala
+   */
+  showCreateRoom(): void {
+    this.showCreateRoomModal = true
+  }
+
+  /**
+   * Desplaza al inicio de la página
+   */
+  scrollToTop(): void {
+    this.content.scrollToTop(500)
+  }
+
+  // Resto de métodos de sincronización y visualización (mantener los existentes)
+  applyVisualSettings(): void {
     if (this.sensitivityModeEnabled) {
-      // Aplicar ajustes para el modo de sensibilidad
       document.body.classList.add("sensitivity-mode")
     } else {
       document.body.classList.remove("sensitivity-mode")
     }
   }
 
-  /**
-   * Inicializa el contexto de audio y el analizador
-   */
-  initAudioContext() {
+  initAudioContext(): void {
     try {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
       this.analyser = this.audioContext.createAnalyser()
@@ -229,22 +610,17 @@ export class MusicSyncPage implements OnInit, OnDestroy {
       const bufferLength = this.analyser.frequencyBinCount
       this.dataArray = new Uint8Array(bufferLength)
 
-      // Conectar el elemento de audio al analizador
-      if (this.audioPlayer && this.audioPlayer.nativeElement) {
+      if (this.audioPlayer?.nativeElement) {
         this.source = this.audioContext.createMediaElementSource(this.audioPlayer.nativeElement)
         this.source.connect(this.analyser)
         this.analyser.connect(this.audioContext.destination)
       }
     } catch (error) {
       console.error("Error al inicializar el contexto de audio:", error)
-      this.showToast("No se pudo inicializar el analizador de audio")
     }
   }
 
-  /**
-   * Limpia el contexto de audio y libera recursos
-   */
-  cleanupAudioContext() {
+  cleanupAudioContext(): void {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId)
       this.animationFrameId = null
@@ -260,240 +636,13 @@ export class MusicSyncPage implements OnInit, OnDestroy {
       this.source = null
     }
 
-    if (this.audioContext) {
-      if (this.audioContext.state !== "closed") {
-        this.audioContext.close()
-      }
+    if (this.audioContext && this.audioContext.state !== "closed") {
+      this.audioContext.close()
       this.audioContext = null
     }
   }
 
-  /**
-   * Carga pistas de música reales
-   */
-  loadMusicTracks() {
-    // Pistas de música para el dispositivo (archivos locales)
-    this.deviceTracks = [
-      {
-        id: "device1",
-        title: "Canción de demostración 1",
-        artist: "Artista Local",
-        duration: 180,
-        source: "assets/audio/demo-song-1.mp3",
-        thumbnail: "assets/images/thumbnail1.jpg",
-        type: "device",
-      },
-      {
-        id: "device2",
-        title: "Canción de demostración 2",
-        artist: "Artista Local",
-        duration: 210,
-        source: "assets/audio/demo-song-2.mp3",
-        thumbnail: "assets/images/thumbnail2.jpg",
-        type: "device",
-      },
-      {
-        id: "device3",
-        title: "Canción de demostración 3",
-        artist: "Artista Local",
-        duration: 195,
-        source: "assets/audio/demo-song-3.mp3",
-        thumbnail: "assets/images/thumbnail3.jpg",
-        type: "device",
-      },
-    ]
-
-    // Pistas de música para internet (URLs públicas)
-    this.internetTracks = [
-      {
-        id: "internet1",
-        title: "Música Electrónica",
-        artist: "DJ Web",
-        duration: 240,
-        source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        thumbnail: "assets/images/web-thumbnail1.jpg",
-        type: "internet",
-      },
-      {
-        id: "internet2",
-        title: "Rock Clásico",
-        artist: "Web Rockers",
-        duration: 270,
-        source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        thumbnail: "assets/images/web-thumbnail2.jpg",
-        type: "internet",
-      },
-      {
-        id: "internet3",
-        title: "Jazz Suave",
-        artist: "Jazz Band",
-        duration: 180,
-        source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        thumbnail: "assets/images/web-thumbnail3.jpg",
-        type: "internet",
-      },
-    ]
-
-    // Pistas de Spotify (implementación real requeriría API de Spotify)
-    this.spotifyTracks = []
-  }
-
-  /**
-   * Cambia la pestaña activa
-   */
-  changeTab(tab: string) {
-    this.activeTab = tab
-
-    // Si cambiamos de pestaña, detener la reproducción actual
-    if (this.isPlaying) {
-      this.stopPlayback()
-    }
-
-    // Si seleccionamos Spotify, mostrar modal de login
-    if (tab === "spotify" && !this.spotifyLoggedIn) {
-      this.showSpotifyLoginModal = true
-    }
-  }
-
-  /**
-   * Selecciona una pista para reproducir
-   */
-  selectTrack(track: Track) {
-    // Detener la reproducción actual si hay alguna
-    if (this.isPlaying) {
-      this.stopPlayback()
-    }
-
-    this.currentTrack = track
-
-    // Si es una pista de Spotify y no estamos logueados, mostrar modal de login
-    if (track.type === "spotify" && !this.spotifyLoggedIn) {
-      this.showSpotifyLoginModal = true
-      return
-    }
-
-    // Preparar el reproductor de audio
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.audioPlayer.nativeElement.src = track.source
-      this.audioPlayer.nativeElement.load()
-
-      // Iniciar la reproducción automáticamente
-      this.playPause()
-    }
-  }
-
-  /**
-   * Inicia o pausa la reproducción
-   */
-  playPause() {
-    if (!this.currentTrack) {
-      this.showToast("Selecciona una canción primero")
-      return
-    }
-
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      if (this.isPlaying) {
-        this.audioPlayer.nativeElement.pause()
-        this.isPlaying = false
-
-        // Detener la visualización y sincronización
-        if (this.animationFrameId) {
-          cancelAnimationFrame(this.animationFrameId)
-          this.animationFrameId = null
-        }
-
-        if (this.syncInterval) {
-          clearInterval(this.syncInterval)
-          this.syncInterval = null
-        }
-      } else {
-        // Reanudar el contexto de audio si está suspendido
-        if (this.audioContext && this.audioContext.state === "suspended") {
-          this.audioContext.resume()
-        }
-
-        this.audioPlayer.nativeElement
-          .play()
-          .then(() => {
-            this.isPlaying = true
-
-            // Iniciar la visualización y sincronización
-            this.startVisualization()
-            this.startLightSync()
-          })
-          .catch((error) => {
-            console.error("Error al reproducir audio:", error)
-            this.showToast("No se pudo reproducir la pista de audio. Asegúrate de que el archivo exista.")
-          })
-      }
-    }
-  }
-
-  /**
-   * Detiene la reproducción
-   */
-  stopPlayback() {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.audioPlayer.nativeElement.pause()
-      this.audioPlayer.nativeElement.currentTime = 0
-      this.isPlaying = false
-
-      // Detener la visualización y sincronización
-      if (this.animationFrameId) {
-        cancelAnimationFrame(this.animationFrameId)
-        this.animationFrameId = null
-      }
-
-      if (this.syncInterval) {
-        clearInterval(this.syncInterval)
-        this.syncInterval = null
-      }
-    }
-  }
-
-  /**
-   * Actualiza el volumen
-   */
-  updateVolume() {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.audioPlayer.nativeElement.volume = this.volume / 100
-    }
-  }
-
-  /**
-   * Silencia o activa el sonido
-   */
-  toggleMute() {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.isMuted = !this.isMuted
-      this.audioPlayer.nativeElement.muted = this.isMuted
-    }
-  }
-
-  /**
-   * Actualiza el tiempo de reproducción
-   */
-  updateTime() {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      this.currentTime = this.audioPlayer.nativeElement.currentTime
-      this.duration = this.audioPlayer.nativeElement.duration || 0
-    }
-  }
-
-  /**
-   * Cambia la posición de reproducción
-   */
-  seekTo(event: any) {
-    if (this.audioPlayer && this.audioPlayer.nativeElement) {
-      const newTime = event.detail.value
-      this.audioPlayer.nativeElement.currentTime = newTime
-    }
-  }
-
-  /**
-   * Inicia la visualización del audio
-   */
-  startVisualization() {
+  startVisualization(): void {
     if (!this.analyser || !this.audioVisualizer) return
 
     const canvas = this.audioVisualizer.nativeElement
@@ -506,16 +655,10 @@ export class MusicSyncPage implements OnInit, OnDestroy {
     const draw = () => {
       this.animationFrameId = requestAnimationFrame(draw)
 
-      // Obtener datos de frecuencia
       this.analyser!.getByteFrequencyData(this.dataArray)
-
-      // Limpiar el canvas
       ctx.clearRect(0, 0, width, height)
 
-      // Calcular el ancho de cada barra
       const barWidth = (width / this.dataArray.length) * 2.5
-
-      // Dibujar las barras de frecuencia
       let x = 0
       let sum = 0
 
@@ -523,24 +666,19 @@ export class MusicSyncPage implements OnInit, OnDestroy {
         const barHeight = (this.dataArray[i] / 255) * height
         sum += this.dataArray[i]
 
-        // Calcular color basado en la frecuencia
         const hue = (i / this.dataArray.length) * 360
         ctx.fillStyle = `hsl(${hue}, 100%, 50%)`
-
         ctx.fillRect(x, height - barHeight, barWidth, barHeight)
         x += barWidth + 1
       }
 
-      // Detectar beats para sincronización
       const average = sum / this.dataArray.length
       const now = Date.now()
 
-      // Detectar un beat si el promedio supera el umbral y ha pasado suficiente tiempo desde el último beat
       if (average > 100 * (this.syncSensitivity / 50) && now - this.lastBeatTime > 300) {
         this.beatDetected = true
         this.lastBeatTime = now
 
-        // Cambiar luces en respuesta al beat si la sincronización está habilitada
         if (this.syncEnabled && this.selectedPresetId !== null) {
           this.applyBeatEffect()
         }
@@ -552,50 +690,45 @@ export class MusicSyncPage implements OnInit, OnDestroy {
     draw()
   }
 
-  /**
-   * Inicia la sincronización de luces con la música
-   */
-  startLightSync() {
+  stopVisualization(): void {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId)
+      this.animationFrameId = null
+    }
+
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval)
+      this.syncInterval = null
+    }
+  }
+
+  startLightSync(): void {
     if (this.syncInterval) {
       clearInterval(this.syncInterval)
     }
 
-    // Si no hay preset seleccionado o la sincronización está desactivada, no hacer nada
     if (!this.syncEnabled || this.selectedPresetId === null) return
 
     const preset = this.presets.find((p) => p.id === this.selectedPresetId)
     if (!preset || preset.colors.length === 0) return
 
-    // Iniciar un intervalo para cambiar las luces periódicamente
-    // Esto se complementa con los cambios basados en beats detectados
     this.syncInterval = setInterval(() => {
-      // Cambiar colores periódicamente incluso sin beats detectados
-      // para mantener algún tipo de animación
       if (!this.beatDetected) {
         this.currentColorIndex = (this.currentColorIndex + 1) % preset.colors.length
         this.applyColorToLights(preset.colors[this.currentColorIndex])
       }
-    }, 2000) // Cambio cada 2 segundos si no hay beats
+    }, 2000)
   }
 
-  /**
-   * Aplica un efecto de luz en respuesta a un beat detectado
-   */
-  applyBeatEffect() {
+  applyBeatEffect(): void {
     const preset = this.presets.find((p) => p.id === this.selectedPresetId)
     if (!preset || preset.colors.length === 0) return
 
-    // Cambiar al siguiente color en el preset
     this.currentColorIndex = (this.currentColorIndex + 1) % preset.colors.length
-
-    // Aplicar el color a todas las luces encendidas
     this.applyColorToLights(preset.colors[this.currentColorIndex])
   }
 
-  /**
-   * Aplica un color a todas las luces encendidas
-   */
-  applyColorToLights(color: string) {
+  applyColorToLights(color: string): void {
     const lights = this.lightService.getLights()
     const updatedLights = lights.map((light) => {
       if (light.isOn) {
@@ -607,7 +740,6 @@ export class MusicSyncPage implements OnInit, OnDestroy {
 
     this.lightService.lightsSubject.next(updatedLights)
 
-    // Enviar datos al dispositivo Bluetooth si está conectado
     if (this.bluetoothConnected) {
       this.bluetoothService.sendData({
         type: "colorChange",
@@ -616,30 +748,21 @@ export class MusicSyncPage implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Convierte un color hexadecimal a RGB
-   */
   hexToRgb(hex: string): { r: number; g: number; b: number } {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
     return result
       ? {
-          r: Number.parseInt(result[1], 16),
-          g: Number.parseInt(result[2], 16),
-          b: Number.parseInt(result[3], 16),
-        }
+        r: Number.parseInt(result[1], 16),
+        g: Number.parseInt(result[2], 16),
+        b: Number.parseInt(result[3], 16),
+      }
       : { r: 0, g: 0, b: 0 }
   }
 
-  /**
-   * Selecciona un preset para la sincronización
-   */
-  selectPreset(presetId: number) {
+  selectPreset(presetId: number): void {
     this.selectedPresetId = presetId
-
-    // Reiniciar el índice de color
     this.currentColorIndex = 0
 
-    // Reiniciar la sincronización si está reproduciendo
     if (this.isPlaying && this.syncEnabled) {
       if (this.syncInterval) {
         clearInterval(this.syncInterval)
@@ -649,19 +772,15 @@ export class MusicSyncPage implements OnInit, OnDestroy {
 
     const preset = this.presets.find((p) => p.id === presetId)
     if (preset) {
-      this.showToast(`Preset "${preset.name}" seleccionado para sincronización`)
+      this.showToast(`Preset "${preset.name}" seleccionado`)
     }
   }
 
-  /**
-   * Activa o desactiva la sincronización de luces
-   */
-  toggleSync() {
+  toggleSync(): void {
     this.syncEnabled = !this.syncEnabled
 
     if (this.syncEnabled) {
       if (this.selectedPresetId === null && this.presets.length > 0) {
-        // Seleccionar el primer preset por defecto si no hay ninguno seleccionado
         this.selectedPresetId = this.presets[0].id
       }
 
@@ -669,142 +788,45 @@ export class MusicSyncPage implements OnInit, OnDestroy {
         this.startLightSync()
       }
 
-      this.showToast("Sincronización de luces activada")
+      this.showToast("Sincronización activada")
     } else {
       if (this.syncInterval) {
         clearInterval(this.syncInterval)
         this.syncInterval = null
       }
 
-      this.showToast("Sincronización de luces desactivada")
+      this.showToast("Sincronización desactivada")
     }
   }
 
-  /**
-   * Ajusta la sensibilidad de la sincronización
-   */
-  adjustSensitivity() {
-    // La sensibilidad afecta al umbral de detección de beats
+  adjustSensitivity(): void {
     this.beatThreshold = 2.5 - this.syncSensitivity / 50
-
     this.showToast(`Sensibilidad ajustada a ${this.syncSensitivity}%`)
   }
 
-  /**
-   * Guarda un nuevo patrón de sincronización
-   */
-  savePattern() {
+  savePattern(): void {
     if (this.newPatternName.trim() === "") {
-      this.showToast("Por favor ingresa un nombre para el patrón")
+      this.showToast("Ingresa un nombre para el patrón")
       return
     }
 
-    // Obtener los colores actuales de las luces encendidas
     const activeLights = this.lights.filter((light) => light.isOn)
     if (activeLights.length === 0) {
-      this.showToast("Debes tener al menos una luz encendida para guardar un patrón")
+      this.showToast("Debes tener al menos una luz encendida")
       return
     }
 
-    const colors = activeLights.map((light) => light.color)
-
-    // Guardar como un nuevo preset
     const newPresetId = this.lightService.saveNewPreset(this.newPatternName)
 
     if (newPresetId) {
       this.newPatternName = ""
       this.showSavePatternModal = false
       this.showToast("Patrón guardado correctamente")
-
-      // Seleccionar el nuevo preset para la sincronización
       this.selectedPresetId = newPresetId
     }
   }
 
-  /**
-   * Busca pistas de música
-   */
-  searchMusic() {
-    if (this.searchQuery.trim() === "") return
-
-    this.isLoading = true
-
-    // Implementación real de búsqueda
-    setTimeout(() => {
-      this.isLoading = false
-
-      // Filtrar las pistas según la pestaña activa y el término de búsqueda
-      if (this.activeTab === "device") {
-        this.deviceTracks = this.deviceTracks.filter(
-          (track) =>
-            track.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-            track.artist.toLowerCase().includes(this.searchQuery.toLowerCase()),
-        )
-      } else if (this.activeTab === "internet") {
-        // Filtrar pistas de internet
-        this.internetTracks = this.internetTracks.filter(
-          (track) =>
-            track.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-            track.artist.toLowerCase().includes(this.searchQuery.toLowerCase()),
-        )
-      }
-    }, 500)
-  }
-
-  /**
-   * Implementación real de inicio de sesión en Spotify
-   */
-  loginToSpotify() {
-    this.isLoading = true
-
-    // En una implementación real, aquí se usaría OAuth para autenticar con Spotify
-    // Por ahora, vamos a crear una implementación básica que funcione
-
-    // Simular proceso de autenticación
-    setTimeout(() => {
-      this.isLoading = false
-      this.spotifyLoggedIn = true
-      this.spotifyUsername = "usuario_spotify"
-      this.showSpotifyLoginModal = false
-
-      this.showToast("Conectado a Spotify correctamente")
-
-      // Cargar pistas de Spotify (en una implementación real, esto vendría de la API de Spotify)
-      this.spotifyTracks = [
-        {
-          id: "spotify1",
-          title: "Tu Mix Diario",
-          artist: "Spotify",
-          duration: 220,
-          source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", // URL pública para pruebas
-          thumbnail: "assets/images/spotify-daily.jpg",
-          type: "spotify",
-        },
-        {
-          id: "spotify2",
-          title: "Descubrimiento Semanal",
-          artist: "Spotify",
-          duration: 240,
-          source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", // URL pública para pruebas
-          thumbnail: "assets/images/spotify-discover.jpg",
-          type: "spotify",
-        },
-        {
-          id: "spotify3",
-          title: "Tus Favoritos",
-          artist: "Spotify",
-          duration: 260,
-          source: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", // URL pública para pruebas
-          thumbnail: "assets/images/spotify-favorites.jpg",
-          type: "spotify",
-        },
-      ]
-    }, 1500)
-  }
-
-  /**
-   * Muestra un mensaje toast
-   */
+  // Métodos auxiliares
   async showToast(message: string): Promise<void> {
     const toast = await this.toastController.create({
       message,
@@ -814,9 +836,15 @@ export class MusicSyncPage implements OnInit, OnDestroy {
     await toast.present()
   }
 
-  /**
-   * Formatea el tiempo en formato mm:ss
-   */
+  async showAlert(header: string, message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ["OK"],
+    })
+    await alert.present()
+  }
+
   formatTime(seconds: number): string {
     if (isNaN(seconds)) return "00:00"
 
@@ -826,25 +854,50 @@ export class MusicSyncPage implements OnInit, OnDestroy {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
-  /**
-   * Navega a la página de inicio
-   */
-  goToHome() {
-    // Detener la reproducción antes de navegar
+  goToHome(): void {
     this.stopPlayback()
     this.cleanupAudioContext()
-
     this.router.navigate(["/home"])
   }
-}
 
-// Interfaz para las pistas de música
-interface Track {
-  id: string
-  title: string
-  artist: string
-  duration: number
-  source: string
-  thumbnail: string
-  type: "device" | "internet" | "spotify"
+  // Método para obtener las pistas según la pestaña activa
+  getCurrentTracks(): Track[] {
+    switch (this.activeTab) {
+      case "device":
+        return this.deviceTracks
+      case "youtube":
+        return this.youtubeTracks
+      case "spotify":
+        return this.spotifyTracks
+      default:
+        return []
+    }
+  }
+
+  /**
+   * Maneja errores de carga de imágenes
+   */
+  onImageError(event: any): void {
+    const img = event.target
+    const title = img.alt || "Música"
+
+    // Crear un SVG de respaldo
+    const svg = `
+      <svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="defaultGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <rect width="80" height="80" fill="url(#defaultGrad)" rx="8"/>
+        <circle cx="40" cy="35" r="12" fill="white" opacity="0.8"/>
+        <polygon points="35,30 35,40 45,35" fill="#667eea"/>
+        <text x="40" y="60" font-family="Arial, sans-serif" font-size="10" 
+              text-anchor="middle" fill="white">♪</text>
+      </svg>
+    `
+
+    img.src = `data:image/svg+xml;base64,${btoa(svg)}`
+  }
 }

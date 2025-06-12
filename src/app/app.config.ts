@@ -3,8 +3,10 @@ import { provideRouter } from "@angular/router"
 import { provideIonicAngular, IonicRouteStrategy } from "@ionic/angular/standalone"
 import { RouteReuseStrategy } from "@angular/router"
 import { provideHttpClient } from "@angular/common/http"
-import { AndroidPermissions } from "@awesome-cordova-plugins/android-permissions/ngx"
-import { Media } from "@awesome-cordova-plugins/media/ngx"
+import { Media } from '@capacitor-community/media';
+import { HttpClientModule } from '@angular/common/http';
+
+
 
 import { routes } from "./app.routes"
 
@@ -14,7 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideIonicAngular(),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideHttpClient(),
-    AndroidPermissions,
-    Media,
+    
   ],
 }

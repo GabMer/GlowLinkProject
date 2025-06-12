@@ -1,186 +1,203 @@
 import { Injectable } from "@angular/core"
-import { Media, MediaObject } from "@awesome-cordova-plugins/media/ngx"
 import { BehaviorSubject } from "rxjs"
-import { Platform } from "@ionic/angular"
-import { MusicFile } from "./music-file.service"
+import type { Platform } from "@ionic/angular"
+import type { MusicFile } from "./music-file.service"
 
 export interface PlaybackStatus {
-  isPlaying: boolean
-  currentTime: number
-  duration: number
-  volume: number
+    isPlaying: boolean
+    currentTime: number
+    duration: number
+    volume: number
 }
 
 @Injectable({
-  providedIn: "root",
+    providedIn: "root",
 })
 export class MusicPlayerService {
-  private mediaObject: MediaObject | null = null
-  private statusSubject = new BehaviorSubject<PlaybackStatus>({
-    isPlaying: false,
-    currentTime: 0,
-    duration: 0,
-    volume: 1.0,
-  })
-  public status$ = this.statusSubject.asObservable()
-
-  private currentFileSubject = new BehaviorSubject<MusicFile | null>(null)
-  public currentFile$ = this.currentFileSubject.asObservable()
-
-  private updateInterval: any = null
-
-  constructor(
-    private media: Media,
-    private platform: Platform,
-  ) {}
-
-  /**
-   * Reproduce un archivo de música
-   */
-  async playFile(file: MusicFile): Promise<boolean> {
-    await this.platform.ready()
-
-    // Detener reproducción actual si existe
-    this.stopPlayback()
-
-    try {
-      console.log(`Reproduciendo: ${file.path}`)
-      this.mediaObject = this.media.create(file.path)
-
-      // Manejar eventos del reproductor
-      this.mediaObject.onStatusUpdate.subscribe((status) => {
-        console.log(`Estado del reproductor: ${status}`)
-        // Media.MEDIA_STARTING = 1
-        // Media.MEDIA_RUNNING = 2
-        // Media.MEDIA_PAUSED = 3
-        // Media.MEDIA_STOPPED = 4
-        const isPlaying = status === 2
-        this.updateStatus({ isPlaying })
-      })
-
-      this.mediaObject.onSuccess.subscribe(() => {
-        console.log("Reproducción completada con éxito")
-        this.stopPlayback()
-      })
-
-      this.mediaObject.onError.subscribe((error) => {
-        console.error("Error en la reproducción:", error)
-        this.stopPlayback()
-      })
-
-      // Iniciar reproducción
-      this.mediaObject.play()
-      this.currentFileSubject.next(file)
-      this.updateStatus({ isPlaying: true })
-
-      // Iniciar intervalo para actualizar la posición
-      this.startPositionUpdateInterval()
-
-      return true
-    } catch (error) {
-      console.error("Error al reproducir archivo:", error)
-      return false
-    }
-  }
-
-  /**
-   * Pausa o reanuda la reproducción
-   */
-  togglePlayback(): boolean {
-    if (!this.mediaObject) return false
-
-    const currentStatus = this.statusSubject.getValue()
-
-    if (currentStatus.isPlaying) {
-      this.mediaObject.pause()
-      this.updateStatus({ isPlaying: false })
-    } else {
-      this.mediaObject.play()
-      this.updateStatus({ isPlaying: true })
-    }
-
-    return true
-  }
-
-  /**
-   * Detiene la reproducción
-   */
-  stopPlayback(): void {
-    if (this.mediaObject) {
-      this.mediaObject.stop()
-      this.mediaObject.release()
-      this.mediaObject = null
-    }
-
-    this.currentFileSubject.next(null)
-    this.updateStatus({
-      isPlaying: false,
-      currentTime: 0,
+    private audioElement: HTMLAudioElement | null = null
+    private statusSubject = new BehaviorSubject<PlaybackStatus>({
+        isPlaying: false,
+        currentTime: 0,
+        duration: 0,
+        volume: 1.0,
     })
+    public status$ = this.statusSubject.asObservable()
 
-    // Detener intervalo de actualización
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval)
-      this.updateInterval = null
-    }
-  }
+    private currentFileSubject = new BehaviorSubject<MusicFile | null>(null)
+    public currentFile$ = this.currentFileSubject.asObservable()
 
-  /**
-   * Ajusta el volumen (0.0 - 1.0)
-   */
-  setVolume(volume: number): void {
-    if (!this.mediaObject) return
+    private updateInterval: any = null
 
-    // Asegurar que el volumen esté entre 0 y 1
-    const safeVolume = Math.max(0, Math.min(1, volume))
-    this.mediaObject.setVolume(safeVolume)
-    this.updateStatus({ volume: safeVolume })
-  }
-
-  /**
-   * Busca una posición específica en segundos
-   */
-  seekTo(position: number): void {
-    if (!this.mediaObject) return
-
-    this.mediaObject.seekTo(position * 1000) // Convertir a milisegundos
-    this.updateStatus({ currentTime: position })
-  }
-
-  /**
-   * Inicia un intervalo para actualizar la posición actual
-   */
-  private startPositionUpdateInterval(): void {
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval)
+    constructor(private platform: Platform) {
+        this.initAudioElement()
     }
 
-    this.updateInterval = setInterval(() => {
-      if (!this.mediaObject) return
+    /**
+     * Inicializa el elemento de audio
+     */
+    private initAudioElement(): void {
+        if (typeof Audio !== "undefined") {
+            this.audioElement = new Audio()
 
-      // Obtener posición actual
-      this.mediaObject.getCurrentPosition().then((position) => {
-        if (position >= 0) {
-          this.updateStatus({ currentTime: position })
+            // Configurar eventos
+            this.audioElement.onplay = () => this.updateStatus({ isPlaying: true })
+            this.audioElement.onpause = () => this.updateStatus({ isPlaying: false })
+            this.audioElement.onended = () => {
+                this.updateStatus({ isPlaying: false, currentTime: 0 })
+                this.stopUpdateInterval()
+            }
+            this.audioElement.onloadedmetadata = () => {
+                if (this.audioElement) {
+                    this.updateStatus({ duration: this.audioElement.duration })
+                }
+            }
+            this.audioElement.onerror = (e) => {
+                console.error("Error de audio:", e)
+                this.updateStatus({ isPlaying: false })
+                this.stopUpdateInterval()
+            }
         }
-      })
+    }
 
-      // Obtener duración
-      const duration = this.mediaObject.getDuration()
-      if (duration > 0) {
-        this.updateStatus({ duration })
-      }
-    }, 1000)
-  }
+    /**
+     * Reproduce un archivo de música
+     */
+    async playFile(file: MusicFile): Promise<boolean> {
+        await this.platform.ready()
 
-  /**
-   * Actualiza el estado de reproducción
-   */
-  private updateStatus(updates: Partial<PlaybackStatus>): void {
-    const currentStatus = this.statusSubject.getValue()
-    this.statusSubject.next({
-      ...currentStatus,
-      ...updates,
-    })
-  }
+        // Detener reproducción actual si existe
+        this.stopPlayback()
+
+        try {
+            if (!this.audioElement) {
+                this.initAudioElement()
+            }
+
+            if (!this.audioElement) {
+                console.error("No se pudo crear el elemento de audio")
+                return false
+            }
+
+            console.log(`Reproduciendo: ${file.path}`)
+            this.audioElement.src = file.path
+            this.audioElement.load()
+
+            // Iniciar reproducción
+            await this.audioElement.play()
+            this.currentFileSubject.next(file)
+            this.updateStatus({ isPlaying: true })
+
+            // Iniciar intervalo para actualizar la posición
+            this.startUpdateInterval()
+
+            return true
+        } catch (error) {
+            console.error("Error al reproducir archivo:", error)
+            return false
+        }
+    }
+
+    /**
+     * Pausa o reanuda la reproducción
+     */
+    togglePlayback(): boolean {
+        if (!this.audioElement) return false
+
+        const currentStatus = this.statusSubject.getValue()
+
+        if (currentStatus.isPlaying) {
+            this.audioElement.pause()
+            this.updateStatus({ isPlaying: false })
+            this.stopUpdateInterval()
+        } else {
+            this.audioElement
+                .play()
+                .then(() => {
+                    this.updateStatus({ isPlaying: true })
+                    this.startUpdateInterval()
+                })
+                .catch((err) => {
+                    console.error("Error al reanudar reproducción:", err)
+                })
+        }
+
+        return true
+    }
+
+    /**
+     * Detiene la reproducción
+     */
+    stopPlayback(): void {
+        if (this.audioElement) {
+            this.audioElement.pause()
+            this.audioElement.currentTime = 0
+        }
+
+        this.currentFileSubject.next(null)
+        this.updateStatus({
+            isPlaying: false,
+            currentTime: 0,
+        })
+
+        this.stopUpdateInterval()
+    }
+
+    /**
+     * Ajusta el volumen (0.0 - 1.0)
+     */
+    setVolume(volume: number): void {
+        if (!this.audioElement) return
+
+        // Asegurar que el volumen esté entre 0 y 1
+        const safeVolume = Math.max(0, Math.min(1, volume))
+        this.audioElement.volume = safeVolume
+        this.updateStatus({ volume: safeVolume })
+    }
+
+    /**
+     * Busca una posición específica en segundos
+     */
+    seekTo(position: number): void {
+        if (!this.audioElement) return
+
+        this.audioElement.currentTime = position
+        this.updateStatus({ currentTime: position })
+    }
+
+    /**
+     * Inicia un intervalo para actualizar la posición actual
+     */
+    private startUpdateInterval(): void {
+        this.stopUpdateInterval()
+
+        this.updateInterval = setInterval(() => {
+            if (!this.audioElement) return
+
+            this.updateStatus({
+                currentTime: this.audioElement.currentTime,
+                duration: this.audioElement.duration || 0,
+            })
+        }, 1000)
+    }
+
+    /**
+     * Detiene el intervalo de actualización
+     */
+    private stopUpdateInterval(): void {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval)
+            this.updateInterval = null
+        }
+    }
+
+    /**
+     * Actualiza el estado de reproducción
+     */
+    private updateStatus(updates: Partial<PlaybackStatus>): void {
+        const currentStatus = this.statusSubject.getValue()
+        this.statusSubject.next({
+            ...currentStatus,
+            ...updates,
+        })
+    }
 }
